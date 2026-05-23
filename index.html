@@ -33,6 +33,19 @@
       position:relative;
     }
 
+    /* Background Video */
+    #bgVideo{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      z-index:0;
+      opacity:0.4;
+      pointer-events:none;
+    }
+
     .container{
       z-index:2;
       max-width:800px;
@@ -171,42 +184,6 @@
       to{opacity:1; transform:scale(1.5);}
     }
 
-    .button-group{
-      display:flex;
-      gap:15px;
-      justify-content:center;
-      margin-top:30px;
-      flex-wrap:wrap;
-    }
-
-    .celebrate-btn, .music-btn{
-      padding:12px 30px;
-      background:linear-gradient(135deg, #ff4dff, #ff6b6b);
-      border:none;
-      border-radius:50px;
-      color:white;
-      font-family:'Poppins',sans-serif;
-      font-size:16px;
-      font-weight:600;
-      cursor:pointer;
-      transition:all 0.3s ease;
-      box-shadow:0 0 20px rgba(255,77,255,0.5);
-    }
-
-    .music-btn{
-      background:linear-gradient(135deg, #4d4dff, #6b6bff);
-      box-shadow:0 0 20px rgba(77,77,255,0.5);
-    }
-
-    .celebrate-btn:hover, .music-btn:hover{
-      transform:scale(1.05);
-      box-shadow:0 0 30px rgba(255,77,255,0.8);
-    }
-
-    .celebrate-btn:active, .music-btn:active{
-      transform:scale(0.95);
-    }
-
     @media(max-width:768px){
       .title{
         font-size:50px;
@@ -229,11 +206,6 @@
         font-size:16px;
         padding:20px;
       }
-
-      .celebrate-btn, .music-btn{
-        padding:10px 20px;
-        font-size:14px;
-      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -241,24 +213,16 @@
         animation: none;
       }
     }
-
-    /* Sound notification badge */
-    .sound-badge{
-      position:fixed;
-      bottom:20px;
-      right:20px;
-      background:rgba(0,0,0,0.7);
-      padding:8px 15px;
-      border-radius:20px;
-      font-size:12px;
-      z-index:1000;
-      backdrop-filter:blur(5px);
-      cursor:pointer;
-    }
   </style>
 </head>
 
 <body>
+
+<!-- Background Video -->
+<video id="bgVideo" autoplay loop muted>
+  <source src="music.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 <div class="stars" id="stars"></div>
 
@@ -318,172 +282,38 @@
       🌟 With lots of love and warm wishes 🌟
     </div>
 
-    <div class="button-group">
-      <button class="celebrate-btn" id="celebrateBtn">
-        🎉 Celebrate Again! 🎉
-      </button>
-      <button class="music-btn" id="musicBtn">
-        🔇 Music Off
-      </button>
-    </div>
   </div>
 
-</div>
-
-<div class="sound-badge" id="soundBadge">
-  🎵 Click to enable sound
 </div>
 
 <script>
 
 // ============================================
-// SOUND SYSTEM - Birthday Song using Web Audio API
+// VIDEO AND AUDIO SYSTEM
 // ============================================
 
-let audioContext = null;
-let isMusicPlaying = false;
-let musicEnabled = false;
-let currentNote = 0;
-let musicInterval = null;
+// Get video element and play it
+const bgVideo = document.getElementById('bgVideo');
 
-// Happy Birthday melody notes (frequencies in Hz)
-const birthdayNotes = [
-  { freq: 261.63, duration: 400 }, // C4
-  { freq: 261.63, duration: 400 }, // C4
-  { freq: 293.66, duration: 400 }, // D4
-  { freq: 261.63, duration: 400 }, // C4
-  { freq: 349.23, duration: 400 }, // F4
-  { freq: 329.63, duration: 800 }, // E4
-  
-  { freq: 261.63, duration: 400 }, // C4
-  { freq: 261.63, duration: 400 }, // C4
-  { freq: 293.66, duration: 400 }, // D4
-  { freq: 261.63, duration: 400 }, // C4
-  { freq: 392.00, duration: 400 }, // G4
-  { freq: 349.23, duration: 800 }, // F4
-  
-  { freq: 261.63, duration: 400 }, // C4
-  { freq: 261.63, duration: 400 }, // C4
-  { freq: 523.25, duration: 400 }, // C5
-  { freq: 440.00, duration: 400 }, // A4
-  { freq: 349.23, duration: 400 }, // F4
-  { freq: 329.63, duration: 400 }, // E4
-  { freq: 293.66, duration: 800 }, // D4
-  
-  { freq: 466.16, duration: 400 }, // A#4
-  { freq: 466.16, duration: 400 }, // A#4
-  { freq: 440.00, duration: 400 }, // A4
-  { freq: 349.23, duration: 400 }, // F4
-  { freq: 392.00, duration: 400 }, // G4
-  { freq: 349.23, duration: 800 }  // F4
-];
-
-// Function to initialize audio (user interaction required)
-function initAudio() {
-  if(audioContext) return;
-  
-  audioContext = new (window.AudioContext || window.webkitAudioContext)();
-}
-
-// Function to play a single note
-function playNote(frequency, duration) {
-  if(!audioContext || !musicEnabled) return;
-  
-  const oscillator = audioContext.createOscillator();
-  const gainNode = audioContext.createGain();
-  
-  oscillator.connect(gainNode);
-  gainNode.connect(audioContext.destination);
-  
-  oscillator.frequency.value = frequency;
-  oscillator.type = 'sine';
-  
-  gainNode.gain.value = 0.3;
-  
-  oscillator.start();
-  
-  gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + duration / 1000);
-  oscillator.stop(audioContext.currentTime + duration / 1000);
-}
-
-// Function to play full birthday song
-function playBirthdaySong() {
-  if(!musicEnabled || !audioContext) return;
-  
-  // Resume audio context if suspended
-  if(audioContext.state === 'suspended') {
-    audioContext.resume();
-  }
-  
-  let delay = 0;
-  birthdayNotes.forEach((note) => {
-    setTimeout(() => {
-      if(musicEnabled) {
-        playNote(note.freq, note.duration);
-      }
-    }, delay);
-    delay += note.duration;
+// Force video to play (with user interaction fallback)
+function playVideo() {
+  bgVideo.play().catch(function(error) {
+    console.log("Video autoplay failed:", error);
+    // Most browsers will still play because of muted attribute
   });
-  
-  // Loop the song after it finishes
-  setTimeout(() => {
-    if(musicEnabled) {
-      playBirthdaySong();
-    }
-  }, delay);
 }
 
-// Function to start continuous music
-function startMusic() {
-  if(!musicEnabled) return;
-  
-  if(musicInterval) {
-    clearInterval(musicInterval);
-  }
-  
-  playBirthdaySong();
-}
-
-// Function to stop music
-function stopMusic() {
-  if(musicInterval) {
-    clearInterval(musicInterval);
-    musicInterval = null;
-  }
-}
-
-// Toggle music
-function toggleMusic() {
-  if(!musicEnabled) {
-    // Enable music
-    musicEnabled = true;
-    initAudio();
-    
-    // Resume audio context
-    if(audioContext && audioContext.state === 'suspended') {
-      audioContext.resume();
-    }
-    
-    startMusic();
-    document.getElementById('musicBtn').innerHTML = '🎵 Music On';
-    document.getElementById('soundBadge').style.display = 'none';
-    console.log('🎵 Music enabled!');
-  } else {
-    // Disable music
-    musicEnabled = false;
-    stopMusic();
-    document.getElementById('musicBtn').innerHTML = '🔇 Music Off';
-    console.log('🔇 Music disabled!');
-  }
-}
+// Try to play video immediately
+playVideo();
 
 // ============================================
-// CELEBRATION SYSTEM (Improved!)
+// CELEBRATION SYSTEM
 // ============================================
 
-const targetDate = new Date("2026-05-23T23:28:00+05:00").getTime();
+// TARGET DATE - Change this to actual birthday
+const targetDate = new Date("2026-05-23T23:37:00+05:00").getTime();
 
-// FOR TESTING - Uncomment to test immediately
+// FOR TESTING - Uncomment line below to test immediately
 // const targetDate = new Date().getTime() - 1000;
 
 const countdownScreen = document.getElementById("countdownScreen");
@@ -582,105 +412,6 @@ function startFullCelebration() {
   }, 150);
 }
 
-// CELEBRATE AGAIN - Now more useful!
-function celebrateAgain() {
-  console.log("🎉 CELEBRATE AGAIN triggered!");
-  
-  // Big confetti explosion
-  canvasConfetti({
-    particleCount: 400,
-    spread: 200,
-    origin: { y: 0.5 },
-    startVelocity: 40,
-    colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e', '#ff0000', '#00ff00', '#ff00ff', '#00ffff']
-  });
-  
-  // Side bursts
-  setTimeout(() => {
-    canvasConfetti({
-      particleCount: 200,
-      spread: 120,
-      origin: { y: 0.7, x: 0.1 },
-      startVelocity: 35
-    });
-    canvasConfetti({
-      particleCount: 200,
-      spread: 120,
-      origin: { y: 0.7, x: 0.9 },
-      startVelocity: 35
-    });
-  }, 150);
-  
-  // Ground burst
-  setTimeout(() => {
-    canvasConfetti({
-      particleCount: 300,
-      spread: 100,
-      origin: { y: 0.85 },
-      startVelocity: 25
-    });
-  }, 300);
-  
-  // Continuous small bursts for 3 seconds
-  const endTime = Date.now() + 3000;
-  const burstInterval = setInterval(() => {
-    if(Date.now() >= endTime){
-      clearInterval(burstInterval);
-      return;
-    }
-    
-    canvasConfetti({
-      particleCount: 40,
-      spread: 70,
-      origin: {
-        x: Math.random(),
-        y: Math.random() * 0.6 + 0.2
-      },
-      startVelocity: Math.random() * 25 + 15
-    });
-  }, 100);
-  
-  // Button animation
-  const btn = document.getElementById('celebrateBtn');
-  if(btn){
-    btn.style.transform = 'scale(0.9)';
-    setTimeout(() => btn.style.transform = 'scale(1.05)', 100);
-    setTimeout(() => btn.style.transform = 'scale(1)', 200);
-  }
-  
-  // Play a happy sound effect (if music is enabled)
-  if(musicEnabled && audioContext) {
-    // Play a cheerful chord
-    playNote(523.25, 200); // C5
-    setTimeout(() => playNote(659.25, 200), 150); // E5
-    setTimeout(() => playNote(783.99, 400), 300); // G5
-  }
-  
-  // Show a temporary message
-  showFloatingMessage("🎊 WOHOO! 🎊");
-}
-
-// Floating message effect
-function showFloatingMessage(text) {
-  const msg = document.createElement('div');
-  msg.innerHTML = text;
-  msg.style.position = 'fixed';
-  msg.style.top = '50%';
-  msg.style.left = '50%';
-  msg.style.transform = 'translate(-50%, -50%)';
-  msg.style.fontSize = '40px';
-  msg.style.fontWeight = 'bold';
-  msg.style.color = '#ffb6ff';
-  msg.style.textShadow = '0 0 20px #ff4dff';
-  msg.style.zIndex = '1000';
-  msg.style.pointerEvents = 'none';
-  msg.style.animation = 'floatUp 2s ease-out forwards';
-  msg.style.fontFamily = "'Great Vibes', cursive";
-  document.body.appendChild(msg);
-  
-  setTimeout(() => msg.remove(), 2000);
-}
-
 // ============================================
 // STARS GENERATION
 // ============================================
@@ -737,17 +468,6 @@ styleTag.textContent = `
 `;
 document.head.appendChild(styleTag);
 
-// ============================================
-// EVENT LISTENERS
-// ============================================
-
-document.getElementById('celebrateBtn').addEventListener('click', celebrateAgain);
-document.getElementById('musicBtn').addEventListener('click', toggleMusic);
-document.getElementById('soundBadge').addEventListener('click', () => {
-  toggleMusic();
-  document.getElementById('soundBadge').style.display = 'none';
-});
-
 // Check if birthday is already revealed
 const currentTime = new Date().getTime();
 if(currentTime >= targetDate){
@@ -774,9 +494,9 @@ const observer = new MutationObserver(function(mutations) {
 
 observer.observe(birthdayScreen, { attributes: true });
 
-console.log('🎂 Birthday Surprise Page Loaded! 🎉');
-console.log('✨ Features: Confetti + Music + Floating Hearts ✨');
-console.log('Click "Celebrate Again" for instant party! Click "Music On" for birthday song!');
+console.log('🎂 Happy Birthday Bisma! 🎉');
+console.log('🎵 Background video playing: music.mp4');
+console.log('✨ Enjoy the celebration! ✨');
 
 </script>
 
