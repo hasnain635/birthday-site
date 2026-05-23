@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Birthday Surprise</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#050510;
+      overflow:hidden;
+      color:white;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:20px;
+    }
+
+    .container{
+      z-index:2;
+      max-width:800px;
+    }
+
+    .title{
+      font-size:70px;
+      font-family:'Great Vibes',cursive;
+      color:#ffb6ff;
+      text-shadow:0 0 20px #ff4dff;
+      animation:glow 2s infinite alternate;
+    }
+
+    @keyframes glow{
+      from{
+        text-shadow:0 0 10px #ff4dff;
+      }
+      to{
+        text-shadow:
+        0 0 20px #ff4dff,
+        0 0 40px #ff4dff,
+        0 0 60px #ff4dff;
+      }
+    }
+
+    .countdown{
+      display:flex;
+      justify-content:center;
+      gap:15px;
+      margin-top:30px;
+      flex-wrap:wrap;
+    }
+
+    .box{
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.1);
+      backdrop-filter:blur(10px);
+      padding:20px;
+      border-radius:20px;
+      min-width:110px;
+      box-shadow:0 0 20px rgba(255,255,255,0.08);
+    }
+
+    .number{
+      font-size:40px;
+      font-weight:bold;
+      color:#ffb6ff;
+    }
+
+    .label{
+      font-size:14px;
+      margin-top:5px;
+      opacity:0.8;
+    }
+
+    .message{
+      margin-top:35px;
+      font-size:18px;
+      opacity:0.9;
+      line-height:1.8;
+    }
+
+    .hidden{
+      display:none;
+    }
+
+    .birthday-screen h1{
+      font-size:90px;
+      font-family:'Great Vibes',cursive;
+      color:#ffb6ff;
+      text-shadow:
+      0 0 10px #ff4dff,
+      0 0 20px #ff4dff,
+      0 0 40px #ff4dff;
+      animation:float 3s ease-in-out infinite;
+    }
+
+    @keyframes float{
+      0%{transform:translateY(0px);}
+      50%{transform:translateY(-10px);}
+      100%{transform:translateY(0px);}
+    }
+
+    .birthday-text{
+      margin-top:25px;
+      font-size:20px;
+      line-height:1.9;
+      max-width:700px;
+    }
+
+    .stars{
+      position:absolute;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      top:0;
+      left:0;
+      z-index:0;
+    }
+
+    .star{
+      position:absolute;
+      width:2px;
+      height:2px;
+      background:white;
+      border-radius:50%;
+      animation:twinkle 2s infinite alternate;
+    }
+
+    @keyframes twinkle{
+      from{opacity:0.2;}
+      to{opacity:1;}
+    }
+
+    @media(max-width:768px){
+
+      .title{
+        font-size:50px;
+      }
+
+      .birthday-screen h1{
+        font-size:55px;
+      }
+
+      .number{
+        font-size:28px;
+      }
+
+      .box{
+        min-width:80px;
+        padding:15px;
+      }
+
+      .birthday-text{
+        font-size:16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="container">
+
+  <!-- COUNTDOWN SCREEN -->
+  <div id="countdownScreen">
+
+    <div class="title">
+      A Surprise Is Waiting ✨
+    </div>
+
+    <div class="countdown">
+
+      <div class="box">
+        <div class="number" id="days">0</div>
+        <div class="label">Days</div>
+      </div>
+
+      <div class="box">
+        <div class="number" id="hours">0</div>
+        <div class="label">Hours</div>
+      </div>
+
+      <div class="box">
+        <div class="number" id="minutes">0</div>
+        <div class="label">Minutes</div>
+      </div>
+
+      <div class="box">
+        <div class="number" id="seconds">0</div>
+        <div class="label">Seconds</div>
+      </div>
+
+    </div>
+
+    <div class="message">
+      Something special will unlock soon... 🌙
+    </div>
+
+  </div>
+
+  <!-- BIRTHDAY SCREEN -->
+  <div id="birthdayScreen" class="birthday-screen hidden">
+
+    <h1>Happy Birthday Bisma 🎂</h1>
+
+    <div class="birthday-text">
+      Some people become special quietly...<br><br>
+
+      I just wanted to make something different for your birthday ✨<br><br>
+
+      I hope this year brings you happiness, peace,
+      success, and beautiful memories.<br><br>
+
+      Stay amazing 💖
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+  // PAKISTAN TIME
+  const targetDate = new Date("2026-06-01T00:00:00+05:00").getTime();
+
+  const countdownScreen = document.getElementById("countdownScreen");
+  const birthdayScreen = document.getElementById("birthdayScreen");
+
+  function updateCountdown(){
+
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if(distance <= 0){
+
+      countdownScreen.classList.add("hidden");
+      birthdayScreen.classList.remove("hidden");
+
+      startConfetti();
+
+      clearInterval(interval);
+
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById("days").innerHTML = days;
+    document.getElementById("hours").innerHTML = hours;
+    document.getElementById("minutes").innerHTML = minutes;
+    document.getElementById("seconds").innerHTML = seconds;
+  }
+
+  const interval = setInterval(updateCountdown,1000);
+
+  updateCountdown();
+
+  // CONFETTI
+  function startConfetti(){
+
+    const duration = 10 * 1000;
+    const animationEnd = Date.now() + duration;
+
+    const randomInRange = (min,max) => {
+      return Math.random() * (max - min) + min;
+    }
+
+    const confettiInterval = setInterval(function(){
+
+      const timeLeft = animationEnd - Date.now();
+
+      if(timeLeft <= 0){
+        return clearInterval(confettiInterval);
+      }
+
+      confetti({
+        particleCount:50,
+        spread:100,
+        origin:{
+          x:randomInRange(0.1,0.9),
+          y:Math.random() - 0.2
+        }
+      });
+
+    },250);
+  }
+
+  // STARS
+  const starsContainer = document.getElementById("stars");
+
+  for(let i=0;i<150;i++){
+
+    const star = document.createElement("div");
+
+    star.classList.add("star");
+
+    star.style.top = Math.random() * 100 + "%";
+    star.style.left = Math.random() * 100 + "%";
+
+    star.style.animationDuration =
+      (Math.random() * 3 + 1) + "s";
+
+    starsContainer.appendChild(star);
+  }
+
+</script>
+
+</body>
+</html>
