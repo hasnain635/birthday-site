@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Birthday Surprise</title>
+  <title>Happy Birthday Bisma! 🎂</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,19 +22,21 @@
     body{
       font-family:'Poppins',sans-serif;
       background:#050510;
-      overflow:hidden;
+      overflow-x:hidden;
       color:white;
-      height:100vh;
+      min-height:100vh;
       display:flex;
       justify-content:center;
       align-items:center;
       text-align:center;
       padding:20px;
+      position:relative;
     }
 
     .container{
       z-index:2;
       max-width:800px;
+      width:100%;
     }
 
     .title{
@@ -73,6 +75,11 @@
       border-radius:20px;
       min-width:110px;
       box-shadow:0 0 20px rgba(255,255,255,0.08);
+      transition:transform 0.3s ease;
+    }
+
+    .box:hover{
+      transform:translateY(-5px);
     }
 
     .number{
@@ -107,6 +114,7 @@
       0 0 20px #ff4dff,
       0 0 40px #ff4dff;
       animation:float 3s ease-in-out infinite;
+      margin-bottom:30px;
     }
 
     @keyframes float{
@@ -120,16 +128,33 @@
       font-size:20px;
       line-height:1.9;
       max-width:700px;
+      background:rgba(255,255,255,0.05);
+      padding:30px;
+      border-radius:30px;
+      backdrop-filter:blur(5px);
+      animation:fadeIn 1.5s ease;
+    }
+
+    @keyframes fadeIn{
+      from{
+        opacity:0;
+        transform:scale(0.9);
+      }
+      to{
+        opacity:1;
+        transform:scale(1);
+      }
     }
 
     .stars{
-      position:absolute;
+      position:fixed;
       width:100%;
       height:100%;
       overflow:hidden;
       top:0;
       left:0;
       z-index:0;
+      pointer-events:none;
     }
 
     .star{
@@ -142,12 +167,42 @@
     }
 
     @keyframes twinkle{
-      from{opacity:0.2;}
-      to{opacity:1;}
+      from{opacity:0.2; transform:scale(1);}
+      to{opacity:1; transform:scale(1.5);}
+    }
+
+    .firework{
+      position:fixed;
+      bottom:0;
+      left:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      z-index:999;
+    }
+
+    /* Button to replay confetti */
+    .celebrate-btn{
+      margin-top:30px;
+      padding:12px 30px;
+      background:linear-gradient(135deg, #ff4dff, #ff6b6b);
+      border:none;
+      border-radius:50px;
+      color:white;
+      font-family:'Poppins',sans-serif;
+      font-size:16px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      box-shadow:0 0 20px rgba(255,77,255,0.5);
+    }
+
+    .celebrate-btn:hover{
+      transform:scale(1.05);
+      box-shadow:0 0 30px rgba(255,77,255,0.8);
     }
 
     @media(max-width:768px){
-
       .title{
         font-size:50px;
       }
@@ -167,6 +222,19 @@
 
       .birthday-text{
         font-size:16px;
+        padding:20px;
+      }
+
+      .celebrate-btn{
+        padding:10px 25px;
+        font-size:14px;
+      }
+    }
+
+    /* Accessibility - reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .star, .title, .birthday-screen h1, .box {
+        animation: none;
       }
     }
   </style>
@@ -179,7 +247,7 @@
 <div class="container">
 
   <!-- COUNTDOWN SCREEN -->
-  <div id="countdownScreen">
+  <div id="countdownScreen" aria-live="polite">
 
     <div class="title">
       A Surprise Is Waiting ✨
@@ -188,22 +256,22 @@
     <div class="countdown">
 
       <div class="box">
-        <div class="number" id="days">0</div>
+        <div class="number" id="days" aria-label="Days remaining">0</div>
         <div class="label">Days</div>
       </div>
 
       <div class="box">
-        <div class="number" id="hours">0</div>
+        <div class="number" id="hours" aria-label="Hours remaining">0</div>
         <div class="label">Hours</div>
       </div>
 
       <div class="box">
-        <div class="number" id="minutes">0</div>
+        <div class="number" id="minutes" aria-label="Minutes remaining">0</div>
         <div class="label">Minutes</div>
       </div>
 
       <div class="box">
-        <div class="number" id="seconds">0</div>
+        <div class="number" id="seconds" aria-label="Seconds remaining">0</div>
         <div class="label">Seconds</div>
       </div>
 
@@ -212,117 +280,325 @@
     <div class="message">
       Something special will unlock soon... 🌙
     </div>
-
   </div>
 
   <!-- BIRTHDAY SCREEN -->
   <div id="birthdayScreen" class="birthday-screen hidden">
 
-    <h1>Happy Birthday Bisma 🎂</h1>
+    <h1>Happy Birthday Bisma! 🎂</h1>
 
     <div class="birthday-text">
-      Some people become special quietly...<br><br>
+      ✨ Some people become special quietly... ✨<br><br>
 
-      I just wanted to make something different for your birthday ✨<br><br>
+      I just wanted to make something different for your birthday 🎈<br><br>
 
       I hope this year brings you happiness, peace,
       success, and beautiful memories.<br><br>
 
-      Stay amazing 💖
+      Stay amazing and keep shining like a star! 💖<br><br>
+
+      🌟 With lots of love and warm wishes 🌟
     </div>
 
+    <button class="celebrate-btn" onclick="celebrateAgain()">
+      🎉 Celebrate Again! 🎉
+    </button>
   </div>
 
 </div>
 
 <script>
 
-  // PAKISTAN TIME
+  // PAKISTAN TIME - Target Date (Change this date as needed)
+  // Current target: June 1, 2026 at midnight Pakistan time
   const targetDate = new Date("2026-06-01T00:00:00+05:00").getTime();
+  
+  // For testing purposes - uncomment the line below to see birthday screen immediately
+  // const targetDate = new Date().getTime() - 1000;
 
   const countdownScreen = document.getElementById("countdownScreen");
   const birthdayScreen = document.getElementById("birthdayScreen");
+  
+  let countdownInterval;
+  let confettiInterval;
+  let birthdayRevealed = false;
 
   function updateCountdown(){
 
     const now = new Date().getTime();
     const distance = targetDate - now;
 
-    if(distance <= 0){
-
+    if(distance <= 0 && !birthdayRevealed){
+      
+      // Show birthday screen
       countdownScreen.classList.add("hidden");
       birthdayScreen.classList.remove("hidden");
-
-      startConfetti();
-
-      clearInterval(interval);
-
+      
+      // Start celebrations
+      startIntenseConfetti();
+      startFireworksEffect();
+      
+      birthdayRevealed = true;
+      
+      // Clear countdown interval
+      if(countdownInterval){
+        clearInterval(countdownInterval);
+      }
+      
       return;
     }
-
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    document.getElementById("days").innerHTML = days;
-    document.getElementById("hours").innerHTML = hours;
-    document.getElementById("minutes").innerHTML = minutes;
-    document.getElementById("seconds").innerHTML = seconds;
+    
+    // Only update numbers if not yet birthday
+    if(!birthdayRevealed){
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      document.getElementById("days").innerHTML = days;
+      document.getElementById("hours").innerHTML = hours;
+      document.getElementById("minutes").innerHTML = minutes;
+      document.getElementById("seconds").innerHTML = seconds;
+    }
   }
 
-  const interval = setInterval(updateCountdown,1000);
-
+  // Start countdown
+  countdownInterval = setInterval(updateCountdown, 1000);
   updateCountdown();
 
-  // CONFETTI
-  function startConfetti(){
-
-    const duration = 10 * 1000;
-    const animationEnd = Date.now() + duration;
-
-    const randomInRange = (min,max) => {
-      return Math.random() * (max - min) + min;
+  // IMPROVED CONFETTI FUNCTION
+  function startIntenseConfetti() {
+    // Clear any existing confetti interval
+    if(confettiInterval){
+      clearInterval(confettiInterval);
     }
-
-    const confettiInterval = setInterval(function(){
-
+    
+    const duration = 15 * 1000; // 15 seconds of confetti
+    const animationEnd = Date.now() + duration;
+    
+    // Initial burst
+    canvasConfetti({
+      particleCount: 200,
+      spread: 120,
+      origin: { y: 0.6 },
+      startVelocity: 25,
+      colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e']
+    });
+    
+    canvasConfetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.7, x: 0.2 },
+      startVelocity: 30
+    });
+    
+    canvasConfetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.7, x: 0.8 },
+      startVelocity: 30
+    });
+    
+    // Continuous confetti
+    confettiInterval = setInterval(function() {
       const timeLeft = animationEnd - Date.now();
-
+      
       if(timeLeft <= 0){
-        return clearInterval(confettiInterval);
+        clearInterval(confettiInterval);
+        return;
       }
-
-      confetti({
-        particleCount:50,
-        spread:100,
-        origin:{
-          x:randomInRange(0.1,0.9),
-          y:Math.random() - 0.2
-        }
+      
+      const randomInRange = (min, max) => {
+        return Math.random() * (max - min) + min;
+      }
+      
+      canvasConfetti({
+        particleCount: randomInRange(30, 60),
+        spread: randomInRange(80, 120),
+        origin: {
+          x: randomInRange(0.1, 0.9),
+          y: randomInRange(0.3, 0.6)
+        },
+        startVelocity: randomInRange(15, 25),
+        colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e', '#87ceeb']
       });
-
-    },250);
+      
+      // Add occasional big burst
+      if(Math.random() < 0.2){
+        canvasConfetti({
+          particleCount: randomInRange(50, 100),
+          spread: randomInRange(100, 150),
+          origin: {
+            x: randomInRange(0.2, 0.8),
+            y: randomInRange(0.4, 0.6)
+          },
+          startVelocity: randomInRange(20, 35)
+        });
+      }
+      
+    }, 200);
   }
+  
+  // Fireworks effect using confetti
+  function startFireworksEffect() {
+    let fireworksCount = 0;
+    const fireworksInterval = setInterval(() => {
+      if(fireworksCount >= 20 || !birthdayRevealed){
+        clearInterval(fireworksInterval);
+        return;
+      }
+      
+      const randomX = Math.random();
+      const randomY = Math.random() * 0.5 + 0.2;
+      
+      canvasConfetti({
+        particleCount: 80,
+        spread: 360,
+        origin: { x: randomX, y: randomY },
+        startVelocity: 15,
+        decay: 0.9,
+        colors: ['#ff4dff', '#ffd700', '#ff6b6b', '#00ff00', '#ffb6ff']
+      });
+      
+      fireworksCount++;
+    }, 800);
+  }
+  
+  // Function to celebrate again (button click)
+  function celebrateAgain() {
+    startIntenseConfetti();
+    
+    // Create temporary ripple effect
+    const btn = document.querySelector('.celebrate-btn');
+    btn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      btn.style.transform = 'scale(1.05)';
+      setTimeout(() => {
+        btn.style.transform = 'scale(1)';
+      }, 150);
+    }, 100);
+  }
+  
+  // Make function globally available
+  window.celebrateAgain = celebrateAgain;
 
-  // STARS
+  // GENERATE STARS (Improved)
   const starsContainer = document.getElementById("stars");
-
-  for(let i=0;i<150;i++){
-
+  const starCount = window.innerWidth < 768 ? 100 : 200;
+  
+  for(let i = 0; i < starCount; i++){
     const star = document.createElement("div");
-
     star.classList.add("star");
-
+    
+    // Random position
     star.style.top = Math.random() * 100 + "%";
     star.style.left = Math.random() * 100 + "%";
-
-    star.style.animationDuration =
-      (Math.random() * 3 + 1) + "s";
-
+    
+    // Random size
+    const size = Math.random() * 3 + 1;
+    star.style.width = size + "px";
+    star.style.height = size + "px";
+    
+    // Random animation duration
+    const duration = Math.random() * 4 + 1;
+    star.style.animationDuration = duration + "s";
+    
+    // Random delay
+    star.style.animationDelay = Math.random() * 2 + "s";
+    
     starsContainer.appendChild(star);
   }
-
+  
+  // Add floating hearts effect on birthday
+  function addFloatingHearts() {
+    if(!birthdayRevealed) return;
+    
+    setInterval(() => {
+      if(!birthdayRevealed) return;
+      
+      const heart = document.createElement('div');
+      heart.innerHTML = '💖';
+      heart.style.position = 'fixed';
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.bottom = '-20px';
+      heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+      heart.style.opacity = Math.random() * 0.5 + 0.3;
+      heart.style.pointerEvents = 'none';
+      heart.style.zIndex = '999';
+      heart.style.animation = 'floatUp 4s ease-in forwards';
+      
+      document.body.appendChild(heart);
+      
+      setTimeout(() => {
+        heart.remove();
+      }, 4000);
+    }, 1000);
+  }
+  
+  // Add CSS for floating hearts if not exists
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  // Check if birthday is already revealed on load
+  const now = new Date().getTime();
+  if(now >= targetDate){
+    countdownScreen.classList.add("hidden");
+    birthdayScreen.classList.remove("hidden");
+    startIntenseConfetti();
+    startFireworksEffect();
+    birthdayRevealed = true;
+    if(countdownInterval){
+      clearInterval(countdownInterval);
+    }
+  }
+  
+  // Start floating hearts if birthday is active
+  setTimeout(() => {
+    if(birthdayRevealed){
+      addFloatingHearts();
+    }
+  }, 1000);
+  
+  // Watch for birthday reveal
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if(mutation.attributeName === 'class') {
+        if(!birthdayScreen.classList.contains('hidden') && !birthdayRevealed) {
+          addFloatingHearts();
+        }
+      }
+    });
+  });
+  
+  observer.observe(birthdayScreen, { attributes: true });
+  
+  // Handle window resize - regenerate stars if needed
+  let resizeTimeout;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      if(window.innerWidth < 768 && starsContainer.children.length > 150) {
+        // Keep as is, no need to regenerate
+      }
+    }, 250);
+  });
+  
+  // Console message for developers
+  console.log('🎂 Birthday Surprise Page Loaded! 🎉');
+  console.log('Target Date:', new Date(targetDate).toLocaleString('en-PK', {timeZone: 'Asia/Karachi'}));
+  
 </script>
 
 </body>
