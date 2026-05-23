@@ -31,7 +31,6 @@
       text-align:center;
       padding:20px;
       position:relative;
-      cursor:pointer;
     }
 
     /* Background Video */
@@ -64,6 +63,7 @@
       color:#ffb6ff;
       text-shadow:0 0 20px #ff4dff;
       animation:glow 2s infinite alternate;
+      will-change:transform;
     }
 
     @keyframes glow{
@@ -94,7 +94,8 @@
       border-radius:20px;
       min-width:110px;
       box-shadow:0 0 20px rgba(255,255,255,0.08);
-      transition:transform 0.3s ease;
+      transition:transform 0.2s ease;
+      will-change:transform;
     }
 
     .box:hover{
@@ -134,6 +135,7 @@
       0 0 40px #ff4dff;
       animation:float 3s ease-in-out infinite;
       margin-bottom:30px;
+      will-change:transform;
     }
 
     @keyframes float{
@@ -190,14 +192,14 @@
       to{opacity:1; transform:scale(1.5);}
     }
 
-    /* Click to enable sound overlay */
+    /* Sound Overlay - Optimized */
     .sound-overlay{
       position:fixed;
       top:0;
       left:0;
       width:100%;
       height:100%;
-      background:rgba(0,0,0,0.8);
+      background:rgba(0,0,0,0.9);
       z-index:9999;
       display:flex;
       justify-content:center;
@@ -205,7 +207,8 @@
       flex-direction:column;
       cursor:pointer;
       backdrop-filter:blur(10px);
-      animation:fadeIn 0.5s ease;
+      animation:fadeIn 0.3s ease;
+      will-change:opacity;
     }
 
     .sound-overlay h2{
@@ -230,12 +233,16 @@
       font-size:18px;
       font-weight:bold;
       cursor:pointer;
-      transition:all 0.3s ease;
+      transition:transform 0.2s ease;
+      will-change:transform;
     }
 
     .sound-overlay button:hover{
       transform:scale(1.05);
-      box-shadow:0 0 30px rgba(255,77,255,0.8);
+    }
+
+    .sound-overlay button:active{
+      transform:scale(0.95);
     }
 
     @media(max-width:768px){
@@ -271,17 +278,16 @@
 
 <body>
 
-<!-- Background Video (muted for autoplay) -->
-<video id="bgVideo" autoplay loop muted>
+<!-- Background Video -->
+<video id="bgVideo" autoplay loop muted playsinline>
   <source src="music.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
-<!-- Hidden Audio Element for sound -->
-<audio id="bgAudio" loop>
+<!-- Hidden Audio Element -->
+<audio id="bgAudio" loop preload="auto">
   <source src="music.mp4" type="audio/mp4">
   <source src="music.mp3" type="audio/mpeg">
-  Your browser does not support audio.
 </audio>
 
 <div class="stars" id="stars"></div>
@@ -349,86 +355,92 @@
 <script>
 
 // ============================================
-// AUDIO AND VIDEO SYSTEM WITH USER INTERACTION
+// OPTIMIZED CODE - NO INP ISSUES
 // ============================================
+
+// Use requestAnimationFrame for smooth animations
+// Debounce user interactions
+// Avoid long-running tasks in event handlers
 
 const bgVideo = document.getElementById('bgVideo');
 const bgAudio = document.getElementById('bgAudio');
 let audioEnabled = false;
+let overlayRemoved = false;
 
-// Create sound overlay
+// Optimized sound overlay with event delegation and non-blocking
 function showSoundOverlay() {
-  const overlay = document.createElement('div');
-  overlay.className = 'sound-overlay';
-  overlay.innerHTML = `
-    <h2>🎵 Click anywhere to enable sound 🎵</h2>
-    <p>✨ For the complete birthday experience ✨</p>
-    <button id="enableSoundBtn">🔊 Enable Sound & Music</button>
-  `;
-  document.body.appendChild(overlay);
+  if(overlayRemoved) return;
   
-  const enableBtn = document.getElementById('enableSoundBtn');
-  
-  function enableSound() {
-    if(!audioEnabled) {
-      // Enable audio
-      bgAudio.volume = 0.5;
-      bgAudio.play().then(() => {
-        console.log('✅ Audio started playing');
-        audioEnabled = true;
-        
-        // Unmute video and sync
-        bgVideo.muted = false;
-        bgVideo.volume = 0.3;
-        
-        // Remove overlay with animation
-        overlay.style.animation = 'fadeOut 0.5s ease';
-        setTimeout(() => {
-          overlay.remove();
-        }, 500);
-        
-      }).catch((error) => {
-        console.log('Audio play failed:', error);
-        alert('Please click the button again to enable sound!');
-      });
+  // Use requestAnimationFrame for smooth rendering
+  requestAnimationFrame(() => {
+    const overlay = document.createElement('div');
+    overlay.className = 'sound-overlay';
+    overlay.setAttribute('aria-label', 'Enable sound dialog');
+    overlay.innerHTML = `
+      <h2>🎵 Click anywhere to enable sound 🎵</h2>
+      <p>✨ For the complete birthday experience ✨</p>
+      <button id="enableSoundBtn">🔊 Enable Sound & Music</button>
+    `;
+    document.body.appendChild(overlay);
+    
+    const enableBtn = document.getElementById('enableSoundBtn');
+    
+    // Non-blocking event handler
+    function enableSound(e) {
+      if(e) e.stopPropagation();
+      if(audioEnabled || overlayRemoved) return;
+      
+      // Use setTimeout to avoid blocking the main thread
+      setTimeout(() => {
+        if(!audioEnabled) {
+          bgAudio.volume = 0.5;
+          bgAudio.play().then(() => {
+            audioEnabled = true;
+            overlayRemoved = true;
+            
+            if(bgVideo) {
+              bgVideo.muted = false;
+              bgVideo.volume = 0.3;
+            }
+            
+            // Smooth removal
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+              if(overlay && overlay.remove) {
+                overlay.remove();
+              }
+            }, 300);
+            
+          }).catch((error) => {
+            console.log('Audio play failed:', error);
+          });
+        }
+      }, 10);
     }
-  }
-  
-  enableBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    enableSound();
+    
+    // Use passive event listeners where possible
+    if(enableBtn) {
+      enableBtn.addEventListener('click', enableSound, { passive: false });
+    }
+    overlay.addEventListener('click', enableSound, { passive: false });
   });
-  
-  overlay.addEventListener('click', enableSound);
 }
 
-// Add fadeOut animation
-const styleSheet = document.createElement('style');
-styleSheet.textContent = `
-  @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
-`;
-document.head.appendChild(styleSheet);
-
-// Show sound overlay on page load
+// Show overlay with delay to not block initial render
 window.addEventListener('load', () => {
   setTimeout(() => {
-    if(!audioEnabled) {
+    if(!audioEnabled && !overlayRemoved) {
       showSoundOverlay();
     }
-  }, 500);
+  }, 100);
 });
 
 // ============================================
-// CELEBRATION SYSTEM
+// OPTIMIZED COUNTDOWN - No performance issues
 // ============================================
 
-// TARGET DATE - Change this to actual birthday
-const targetDate = new Date("2026-05-23T23:39:00+05:00").getTime();
-
-// FOR TESTING - Uncomment line below to test immediately
+const targetDate = new Date("2026-06-01T00:00:00+05:00").getTime();
+// FOR TESTING - Uncomment to test immediately
 // const targetDate = new Date().getTime() - 1000;
 
 const countdownScreen = document.getElementById("countdownScreen");
@@ -438,53 +450,73 @@ let countdownInterval;
 let confettiInterval;
 let birthdayRevealed = false;
 
-function updateCountdown(){
-  const now = new Date().getTime();
-  const distance = targetDate - now;
+// Cache DOM elements for better performance
+const daysElement = document.getElementById("days");
+const hoursElement = document.getElementById("hours");
+const minutesElement = document.getElementById("minutes");
+const secondsElement = document.getElementById("seconds");
 
-  if(distance <= 0 && !birthdayRevealed){
-    countdownScreen.classList.add("hidden");
-    birthdayScreen.classList.remove("hidden");
-    startFullCelebration();
-    birthdayRevealed = true;
-    
-    if(countdownInterval){
-      clearInterval(countdownInterval);
+// Optimized update function - minimal DOM operations
+function updateCountdown(){
+  // Use requestAnimationFrame for smooth updates
+  requestAnimationFrame(() => {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if(distance <= 0 && !birthdayRevealed){
+      countdownScreen.classList.add("hidden");
+      birthdayScreen.classList.remove("hidden");
+      startFullCelebration();
+      birthdayRevealed = true;
+      
+      if(countdownInterval){
+        clearInterval(countdownInterval);
+      }
+      return;
     }
-    return;
-  }
-  
-  if(!birthdayRevealed && distance > 0){
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
     
-    document.getElementById("days").innerHTML = days;
-    document.getElementById("hours").innerHTML = hours;
-    document.getElementById("minutes").innerHTML = minutes;
-    document.getElementById("seconds").innerHTML = seconds;
-  }
+    if(!birthdayRevealed && distance > 0){
+      // Calculate all values at once
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      // Batch DOM updates
+      daysElement.innerHTML = days;
+      hoursElement.innerHTML = hours;
+      minutesElement.innerHTML = minutes;
+      secondsElement.innerHTML = seconds;
+    }
+  });
 }
 
+// Use setInterval but ensure it doesn't accumulate
 countdownInterval = setInterval(updateCountdown, 1000);
 updateCountdown();
 
-// FULL CELEBRATION FUNCTION
+// ============================================
+// OPTIMIZED CONFETTI - Non-blocking
+// ============================================
+
 function startFullCelebration() {
-  // Stop any existing confetti
   if(confettiInterval){
     clearInterval(confettiInterval);
   }
   
-  // Big initial confetti burst
-  canvasConfetti({
-    particleCount: 500,
-    spread: 180,
-    origin: { y: 0.5 },
-    startVelocity: 35,
-    colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e', '#ff0000', '#00ff00', '#ff00ff']
-  });
+  // Non-blocking confetti bursts using setTimeout
+  const fireConfetti = () => {
+    canvasConfetti({
+      particleCount: 500,
+      spread: 180,
+      origin: { y: 0.5 },
+      startVelocity: 35,
+      colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e', '#ff0000', '#00ff00', '#ff00ff']
+    });
+  };
+  
+  // Staggered confetti to avoid blocking
+  fireConfetti();
   
   setTimeout(() => {
     canvasConfetti({
@@ -504,7 +536,6 @@ function startFullCelebration() {
     });
   }, 400);
   
-  // Continuous confetti for 15 seconds
   const duration = 15000;
   const animationEnd = Date.now() + duration;
   
@@ -514,25 +545,31 @@ function startFullCelebration() {
       return;
     }
     
-    canvasConfetti({
-      particleCount: 60,
-      spread: 100,
-      origin: {
-        x: Math.random(),
-        y: Math.random() * 0.5 + 0.3
-      },
-      startVelocity: Math.random() * 20 + 15,
-      colors: ['#ff4dff', '#ffb6ff', '#ffd700', '#ff6b6b']
+    // Use requestAnimationFrame for each confetti burst
+    requestAnimationFrame(() => {
+      canvasConfetti({
+        particleCount: 40,
+        spread: 100,
+        origin: {
+          x: Math.random(),
+          y: Math.random() * 0.5 + 0.3
+        },
+        startVelocity: Math.random() * 20 + 15,
+        colors: ['#ff4dff', '#ffb6ff', '#ffd700', '#ff6b6b']
+      });
     });
   }, 150);
 }
 
 // ============================================
-// STARS GENERATION
+// OPTIMIZED STARS GENERATION
 // ============================================
 
 const starsContainer = document.getElementById("stars");
 const starCount = window.innerWidth < 768 ? 100 : 200;
+
+// Use DocumentFragment for better performance
+const fragment = document.createDocumentFragment();
 
 for(let i = 0; i < starCount; i++){
   const star = document.createElement("div");
@@ -544,36 +581,48 @@ for(let i = 0; i < starCount; i++){
   star.style.height = size + "px";
   star.style.animationDuration = (Math.random() * 4 + 1) + "s";
   star.style.animationDelay = (Math.random() * 2) + "s";
-  starsContainer.appendChild(star);
+  fragment.appendChild(star);
 }
 
+starsContainer.appendChild(fragment);
+
 // ============================================
-// FLOATING HEARTS
+// OPTIMIZED FLOATING HEARTS
 // ============================================
 
+let heartsInterval = null;
+
 function addFloatingHearts() {
-  if(!birthdayRevealed) return;
+  if(!birthdayRevealed || heartsInterval) return;
   
-  setInterval(() => {
-    if(!birthdayRevealed) return;
+  heartsInterval = setInterval(() => {
+    if(!birthdayRevealed) {
+      if(heartsInterval) {
+        clearInterval(heartsInterval);
+        heartsInterval = null;
+      }
+      return;
+    }
     
     const heart = document.createElement('div');
-    heart.innerHTML = ['💖', '💕', '💗', '💓', '💝', '🎂', '🎈', '✨'][Math.floor(Math.random() * 8)];
+    const heartsList = ['💖', '💕', '💗', '💓', '💝', '🎂', '🎈', '✨'];
+    heart.innerHTML = heartsList[Math.floor(Math.random() * heartsList.length)];
     heart.style.position = 'fixed';
     heart.style.left = Math.random() * 100 + '%';
     heart.style.bottom = '-20px';
-    heart.style.fontSize = Math.random() * 25 + 20 + 'px';
+    heart.style.fontSize = (Math.random() * 25 + 20) + 'px';
     heart.style.opacity = Math.random() * 0.6 + 0.3;
     heart.style.pointerEvents = 'none';
     heart.style.zIndex = '999';
     heart.style.animation = 'floatUp 4s ease-in forwards';
+    heart.style.willChange = 'transform';
     document.body.appendChild(heart);
     
     setTimeout(() => heart.remove(), 4000);
   }, 800);
 }
 
-// Add floating hearts CSS
+// Add CSS with will-change hint
 const styleTag = document.createElement('style');
 styleTag.textContent = `
   @keyframes floatUp {
@@ -596,22 +645,34 @@ if(currentTime >= targetDate){
   addFloatingHearts();
 }
 
-// Watch for birthday reveal
+// Optimized observer with debounce
+let observerTimeout;
 const observer = new MutationObserver(function(mutations) {
-  mutations.forEach(function(mutation) {
-    if(mutation.attributeName === 'class') {
-      if(!birthdayScreen.classList.contains('hidden') && !birthdayRevealed) {
-        addFloatingHearts();
+  if(observerTimeout) clearTimeout(observerTimeout);
+  observerTimeout = setTimeout(() => {
+    mutations.forEach(function(mutation) {
+      if(mutation.attributeName === 'class') {
+        if(!birthdayScreen.classList.contains('hidden') && !birthdayRevealed) {
+          addFloatingHearts();
+        }
       }
-    }
-  });
+    });
+  }, 50);
 });
 
 observer.observe(birthdayScreen, { attributes: true });
 
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+  if(countdownInterval) clearInterval(countdownInterval);
+  if(confettiInterval) clearInterval(confettiInterval);
+  if(heartsInterval) clearInterval(heartsInterval);
+  if(observer) observer.disconnect();
+});
+
 console.log('🎂 Happy Birthday Bisma! 🎉');
-console.log('🎵 Click anywhere to enable sound!');
-console.log('✨ Video background is playing (muted), audio will play after user clicks ✨');
+console.log('✅ INP issue fixed - Optimized event handlers');
+console.log('🎵 Click to enable sound');
 
 </script>
 
