@@ -171,8 +171,15 @@
       to{opacity:1; transform:scale(1.5);}
     }
 
-    .celebrate-btn{
+    .button-group{
+      display:flex;
+      gap:15px;
+      justify-content:center;
       margin-top:30px;
+      flex-wrap:wrap;
+    }
+
+    .celebrate-btn, .music-btn{
       padding:12px 30px;
       background:linear-gradient(135deg, #ff4dff, #ff6b6b);
       border:none;
@@ -186,12 +193,17 @@
       box-shadow:0 0 20px rgba(255,77,255,0.5);
     }
 
-    .celebrate-btn:hover{
+    .music-btn{
+      background:linear-gradient(135deg, #4d4dff, #6b6bff);
+      box-shadow:0 0 20px rgba(77,77,255,0.5);
+    }
+
+    .celebrate-btn:hover, .music-btn:hover{
       transform:scale(1.05);
       box-shadow:0 0 30px rgba(255,77,255,0.8);
     }
 
-    .celebrate-btn:active{
+    .celebrate-btn:active, .music-btn:active{
       transform:scale(0.95);
     }
 
@@ -218,8 +230,8 @@
         padding:20px;
       }
 
-      .celebrate-btn{
-        padding:10px 25px;
+      .celebrate-btn, .music-btn{
+        padding:10px 20px;
         font-size:14px;
       }
     }
@@ -228,6 +240,20 @@
       .star, .title, .birthday-screen h1, .box {
         animation: none;
       }
+    }
+
+    /* Sound notification badge */
+    .sound-badge{
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      background:rgba(0,0,0,0.7);
+      padding:8px 15px;
+      border-radius:20px;
+      font-size:12px;
+      z-index:1000;
+      backdrop-filter:blur(5px);
+      cursor:pointer;
     }
   </style>
 </head>
@@ -292,21 +318,173 @@
       🌟 With lots of love and warm wishes 🌟
     </div>
 
-    <button class="celebrate-btn" onclick="celebrateAgain()">
-      🎉 Celebrate Again! 🎉
-    </button>
+    <div class="button-group">
+      <button class="celebrate-btn" id="celebrateBtn">
+        🎉 Celebrate Again! 🎉
+      </button>
+      <button class="music-btn" id="musicBtn">
+        🔇 Music Off
+      </button>
+    </div>
   </div>
 
 </div>
 
+<div class="sound-badge" id="soundBadge">
+  🎵 Click to enable sound
+</div>
+
 <script>
 
-// PAKISTAN TIME - Target Date (Change this date as needed)
-// Current target: June 1, 2026 at midnight Pakistan time
-const targetDate = new Date("2026-05-23T23:13:00+05:00").getTime();
+// ============================================
+// SOUND SYSTEM - Birthday Song using Web Audio API
+// ============================================
 
-// FOR TESTING - Uncomment line below to test birthday screen immediately
-// const targetDate = new Date().getTime() - 1000;
+let audioContext = null;
+let isMusicPlaying = false;
+let musicEnabled = false;
+let currentNote = 0;
+let musicInterval = null;
+
+// Happy Birthday melody notes (frequencies in Hz)
+const birthdayNotes = [
+  { freq: 261.63, duration: 400 }, // C4
+  { freq: 261.63, duration: 400 }, // C4
+  { freq: 293.66, duration: 400 }, // D4
+  { freq: 261.63, duration: 400 }, // C4
+  { freq: 349.23, duration: 400 }, // F4
+  { freq: 329.63, duration: 800 }, // E4
+  
+  { freq: 261.63, duration: 400 }, // C4
+  { freq: 261.63, duration: 400 }, // C4
+  { freq: 293.66, duration: 400 }, // D4
+  { freq: 261.63, duration: 400 }, // C4
+  { freq: 392.00, duration: 400 }, // G4
+  { freq: 349.23, duration: 800 }, // F4
+  
+  { freq: 261.63, duration: 400 }, // C4
+  { freq: 261.63, duration: 400 }, // C4
+  { freq: 523.25, duration: 400 }, // C5
+  { freq: 440.00, duration: 400 }, // A4
+  { freq: 349.23, duration: 400 }, // F4
+  { freq: 329.63, duration: 400 }, // E4
+  { freq: 293.66, duration: 800 }, // D4
+  
+  { freq: 466.16, duration: 400 }, // A#4
+  { freq: 466.16, duration: 400 }, // A#4
+  { freq: 440.00, duration: 400 }, // A4
+  { freq: 349.23, duration: 400 }, // F4
+  { freq: 392.00, duration: 400 }, // G4
+  { freq: 349.23, duration: 800 }  // F4
+];
+
+// Function to initialize audio (user interaction required)
+function initAudio() {
+  if(audioContext) return;
+  
+  audioContext = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+// Function to play a single note
+function playNote(frequency, duration) {
+  if(!audioContext || !musicEnabled) return;
+  
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  oscillator.frequency.value = frequency;
+  oscillator.type = 'sine';
+  
+  gainNode.gain.value = 0.3;
+  
+  oscillator.start();
+  
+  gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + duration / 1000);
+  oscillator.stop(audioContext.currentTime + duration / 1000);
+}
+
+// Function to play full birthday song
+function playBirthdaySong() {
+  if(!musicEnabled || !audioContext) return;
+  
+  // Resume audio context if suspended
+  if(audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+  
+  let delay = 0;
+  birthdayNotes.forEach((note) => {
+    setTimeout(() => {
+      if(musicEnabled) {
+        playNote(note.freq, note.duration);
+      }
+    }, delay);
+    delay += note.duration;
+  });
+  
+  // Loop the song after it finishes
+  setTimeout(() => {
+    if(musicEnabled) {
+      playBirthdaySong();
+    }
+  }, delay);
+}
+
+// Function to start continuous music
+function startMusic() {
+  if(!musicEnabled) return;
+  
+  if(musicInterval) {
+    clearInterval(musicInterval);
+  }
+  
+  playBirthdaySong();
+}
+
+// Function to stop music
+function stopMusic() {
+  if(musicInterval) {
+    clearInterval(musicInterval);
+    musicInterval = null;
+  }
+}
+
+// Toggle music
+function toggleMusic() {
+  if(!musicEnabled) {
+    // Enable music
+    musicEnabled = true;
+    initAudio();
+    
+    // Resume audio context
+    if(audioContext && audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    
+    startMusic();
+    document.getElementById('musicBtn').innerHTML = '🎵 Music On';
+    document.getElementById('soundBadge').style.display = 'none';
+    console.log('🎵 Music enabled!');
+  } else {
+    // Disable music
+    musicEnabled = false;
+    stopMusic();
+    document.getElementById('musicBtn').innerHTML = '🔇 Music Off';
+    console.log('🔇 Music disabled!');
+  }
+}
+
+// ============================================
+// CELEBRATION SYSTEM (Improved!)
+// ============================================
+
+const targetDate = new Date("2026-06-01T00:00:00+05:00").getTime();
+
+// FOR TESTING - Uncomment to test immediately
+const targetDate = new Date().getTime() - 1000;
 
 const countdownScreen = document.getElementById("countdownScreen");
 const birthdayScreen = document.getElementById("birthdayScreen");
@@ -316,31 +494,21 @@ let confettiInterval;
 let birthdayRevealed = false;
 
 function updateCountdown(){
-
   const now = new Date().getTime();
   const distance = targetDate - now;
 
   if(distance <= 0 && !birthdayRevealed){
-    
-    // Show birthday screen
     countdownScreen.classList.add("hidden");
     birthdayScreen.classList.remove("hidden");
-    
-    // Start celebrations
-    startIntenseConfetti();
-    startFireworksEffect();
-    
+    startFullCelebration();
     birthdayRevealed = true;
     
-    // Clear countdown interval
     if(countdownInterval){
       clearInterval(countdownInterval);
     }
-    
     return;
   }
   
-  // Only update numbers if not yet birthday
   if(!birthdayRevealed && distance > 0){
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -354,213 +522,189 @@ function updateCountdown(){
   }
 }
 
-// Start countdown
 countdownInterval = setInterval(updateCountdown, 1000);
 updateCountdown();
 
-// IMPROVED CONFETTI FUNCTION
-function startIntenseConfetti() {
-  // Clear any existing confetti interval
+// FULL CELEBRATION FUNCTION
+function startFullCelebration() {
+  // Stop any existing confetti
   if(confettiInterval){
     clearInterval(confettiInterval);
   }
   
-  const duration = 10 * 1000; // 10 seconds of confetti
+  // Big initial confetti burst
+  canvasConfetti({
+    particleCount: 500,
+    spread: 180,
+    origin: { y: 0.5 },
+    startVelocity: 35,
+    colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e', '#ff0000', '#00ff00', '#ff00ff']
+  });
+  
+  setTimeout(() => {
+    canvasConfetti({
+      particleCount: 300,
+      spread: 150,
+      origin: { y: 0.6, x: 0.2 },
+      startVelocity: 30
+    });
+  }, 200);
+  
+  setTimeout(() => {
+    canvasConfetti({
+      particleCount: 300,
+      spread: 150,
+      origin: { y: 0.6, x: 0.8 },
+      startVelocity: 30
+    });
+  }, 400);
+  
+  // Continuous confetti for 15 seconds
+  const duration = 15000;
   const animationEnd = Date.now() + duration;
   
-  // Initial burst
-  canvasConfetti({
-    particleCount: 200,
-    spread: 120,
-    origin: { y: 0.6 },
-    startVelocity: 25,
-    colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e']
-  });
-  
-  canvasConfetti({
-    particleCount: 100,
-    spread: 70,
-    origin: { y: 0.7, x: 0.2 },
-    startVelocity: 30
-  });
-  
-  canvasConfetti({
-    particleCount: 100,
-    spread: 70,
-    origin: { y: 0.7, x: 0.8 },
-    startVelocity: 30
-  });
-  
-  // Continuous confetti
-  confettiInterval = setInterval(function() {
-    const timeLeft = animationEnd - Date.now();
-    
-    if(timeLeft <= 0){
+  confettiInterval = setInterval(() => {
+    if(Date.now() >= animationEnd){
       clearInterval(confettiInterval);
       return;
     }
     
-    const randomInRange = (min, max) => {
-      return Math.random() * (max - min) + min;
-    }
-    
     canvasConfetti({
-      particleCount: randomInRange(30, 60),
-      spread: randomInRange(80, 120),
+      particleCount: 60,
+      spread: 100,
       origin: {
-        x: randomInRange(0.1, 0.9),
-        y: randomInRange(0.3, 0.6)
+        x: Math.random(),
+        y: Math.random() * 0.5 + 0.3
       },
-      startVelocity: randomInRange(15, 25),
-      colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e', '#87ceeb']
+      startVelocity: Math.random() * 20 + 15,
+      colors: ['#ff4dff', '#ffb6ff', '#ffd700', '#ff6b6b']
     });
-    
-    // Add occasional big burst
-    if(Math.random() < 0.2){
-      canvasConfetti({
-        particleCount: randomInRange(50, 100),
-        spread: randomInRange(100, 150),
-        origin: {
-          x: randomInRange(0.2, 0.8),
-          y: randomInRange(0.4, 0.6)
-        },
-        startVelocity: randomInRange(20, 35)
-      });
-    }
-    
-  }, 200);
+  }, 150);
 }
 
-// Fireworks effect using confetti
-function startFireworksEffect() {
-  let fireworksCount = 0;
-  const fireworksInterval = setInterval(() => {
-    if(fireworksCount >= 15 || !birthdayRevealed){
-      clearInterval(fireworksInterval);
-      return;
-    }
-    
-    const randomX = Math.random();
-    const randomY = Math.random() * 0.5 + 0.2;
-    
-    canvasConfetti({
-      particleCount: 80,
-      spread: 360,
-      origin: { x: randomX, y: randomY },
-      startVelocity: 15,
-      decay: 0.9,
-      colors: ['#ff4dff', '#ffd700', '#ff6b6b', '#00ff00', '#ffb6ff']
-    });
-    
-    fireworksCount++;
-  }, 800);
-}
-
-// CELEBRATE AGAIN FUNCTION - Fixed to work properly
+// CELEBRATE AGAIN - Now more useful!
 function celebrateAgain() {
-  console.log("Celebrate Again button clicked! 🎉");
+  console.log("🎉 CELEBRATE AGAIN triggered!");
   
-  // Stop any ongoing confetti
-  if(confettiInterval){
-    clearInterval(confettiInterval);
-    confettiInterval = null;
-  }
-  
-  // Create multiple bursts of confetti
+  // Big confetti explosion
   canvasConfetti({
-    particleCount: 300,
-    spread: 150,
+    particleCount: 400,
+    spread: 200,
     origin: { y: 0.5 },
-    startVelocity: 30,
-    colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e', '#ff0000', '#00ff00', '#0000ff']
+    startVelocity: 40,
+    colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e', '#ff0000', '#00ff00', '#ff00ff', '#00ffff']
   });
   
+  // Side bursts
   setTimeout(() => {
     canvasConfetti({
       particleCount: 200,
       spread: 120,
-      origin: { y: 0.6, x: 0.2 },
-      startVelocity: 25
+      origin: { y: 0.7, x: 0.1 },
+      startVelocity: 35
+    });
+    canvasConfetti({
+      particleCount: 200,
+      spread: 120,
+      origin: { y: 0.7, x: 0.9 },
+      startVelocity: 35
     });
   }, 150);
   
+  // Ground burst
   setTimeout(() => {
     canvasConfetti({
-      particleCount: 200,
-      spread: 120,
-      origin: { y: 0.6, x: 0.8 },
+      particleCount: 300,
+      spread: 100,
+      origin: { y: 0.85 },
       startVelocity: 25
     });
   }, 300);
   
-  setTimeout(() => {
-    canvasConfetti({
-      particleCount: 150,
-      spread: 100,
-      origin: { y: 0.7 },
-      startVelocity: 20
-    });
-  }, 500);
-  
-  // Start a short continuous burst
-  const shortDuration = Date.now() + 3000;
-  const shortInterval = setInterval(() => {
-    if(Date.now() >= shortDuration){
-      clearInterval(shortInterval);
+  // Continuous small bursts for 3 seconds
+  const endTime = Date.now() + 3000;
+  const burstInterval = setInterval(() => {
+    if(Date.now() >= endTime){
+      clearInterval(burstInterval);
       return;
     }
     
     canvasConfetti({
       particleCount: 40,
-      spread: 80,
+      spread: 70,
       origin: {
         x: Math.random(),
-        y: Math.random() * 0.5 + 0.3
+        y: Math.random() * 0.6 + 0.2
       },
-      startVelocity: Math.random() * 20 + 10
+      startVelocity: Math.random() * 25 + 15
     });
-  }, 150);
+  }, 100);
   
-  // Button animation effect
-  const btn = document.querySelector('.celebrate-btn');
+  // Button animation
+  const btn = document.getElementById('celebrateBtn');
   if(btn){
-    btn.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-      btn.style.transform = 'scale(1.05)';
-      setTimeout(() => {
-        btn.style.transform = 'scale(1)';
-      }, 150);
-    }, 100);
+    btn.style.transform = 'scale(0.9)';
+    setTimeout(() => btn.style.transform = 'scale(1.05)', 100);
+    setTimeout(() => btn.style.transform = 'scale(1)', 200);
   }
+  
+  // Play a happy sound effect (if music is enabled)
+  if(musicEnabled && audioContext) {
+    // Play a cheerful chord
+    playNote(523.25, 200); // C5
+    setTimeout(() => playNote(659.25, 200), 150); // E5
+    setTimeout(() => playNote(783.99, 400), 300); // G5
+  }
+  
+  // Show a temporary message
+  showFloatingMessage("🎊 WOHOO! 🎊");
 }
 
-// Make function globally available (important for onclick)
-window.celebrateAgain = celebrateAgain;
+// Floating message effect
+function showFloatingMessage(text) {
+  const msg = document.createElement('div');
+  msg.innerHTML = text;
+  msg.style.position = 'fixed';
+  msg.style.top = '50%';
+  msg.style.left = '50%';
+  msg.style.transform = 'translate(-50%, -50%)';
+  msg.style.fontSize = '40px';
+  msg.style.fontWeight = 'bold';
+  msg.style.color = '#ffb6ff';
+  msg.style.textShadow = '0 0 20px #ff4dff';
+  msg.style.zIndex = '1000';
+  msg.style.pointerEvents = 'none';
+  msg.style.animation = 'floatUp 2s ease-out forwards';
+  msg.style.fontFamily = "'Great Vibes', cursive";
+  document.body.appendChild(msg);
+  
+  setTimeout(() => msg.remove(), 2000);
+}
 
-// GENERATE STARS
+// ============================================
+// STARS GENERATION
+// ============================================
+
 const starsContainer = document.getElementById("stars");
 const starCount = window.innerWidth < 768 ? 100 : 200;
 
 for(let i = 0; i < starCount; i++){
   const star = document.createElement("div");
   star.classList.add("star");
-  
   star.style.top = Math.random() * 100 + "%";
   star.style.left = Math.random() * 100 + "%";
-  
   const size = Math.random() * 3 + 1;
   star.style.width = size + "px";
   star.style.height = size + "px";
-  
-  const duration = Math.random() * 4 + 1;
-  star.style.animationDuration = duration + "s";
-  
-  star.style.animationDelay = Math.random() * 2 + "s";
-  
+  star.style.animationDuration = (Math.random() * 4 + 1) + "s";
+  star.style.animationDelay = (Math.random() * 2) + "s";
   starsContainer.appendChild(star);
 }
 
-// Floating hearts effect
+// ============================================
+// FLOATING HEARTS
+// ============================================
+
 function addFloatingHearts() {
   if(!birthdayRevealed) return;
   
@@ -568,47 +712,48 @@ function addFloatingHearts() {
     if(!birthdayRevealed) return;
     
     const heart = document.createElement('div');
-    heart.innerHTML = '💖';
+    heart.innerHTML = ['💖', '💕', '💗', '💓', '💝', '🎂', '🎈', '✨'][Math.floor(Math.random() * 8)];
     heart.style.position = 'fixed';
     heart.style.left = Math.random() * 100 + '%';
     heart.style.bottom = '-20px';
-    heart.style.fontSize = Math.random() * 20 + 15 + 'px';
-    heart.style.opacity = Math.random() * 0.5 + 0.3;
+    heart.style.fontSize = Math.random() * 25 + 20 + 'px';
+    heart.style.opacity = Math.random() * 0.6 + 0.3;
     heart.style.pointerEvents = 'none';
     heart.style.zIndex = '999';
     heart.style.animation = 'floatUp 4s ease-in forwards';
-    
     document.body.appendChild(heart);
     
-    setTimeout(() => {
-      heart.remove();
-    }, 4000);
-  }, 1000);
+    setTimeout(() => heart.remove(), 4000);
+  }, 800);
 }
 
-// Add CSS for floating hearts
+// Add floating hearts CSS
 const styleTag = document.createElement('style');
 styleTag.textContent = `
   @keyframes floatUp {
-    0% {
-      transform: translateY(0) rotate(0deg);
-      opacity: 0.8;
-    }
-    100% {
-      transform: translateY(-100vh) rotate(360deg);
-      opacity: 0;
-    }
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
   }
 `;
 document.head.appendChild(styleTag);
 
-// Check if birthday is already revealed on load
+// ============================================
+// EVENT LISTENERS
+// ============================================
+
+document.getElementById('celebrateBtn').addEventListener('click', celebrateAgain);
+document.getElementById('musicBtn').addEventListener('click', toggleMusic);
+document.getElementById('soundBadge').addEventListener('click', () => {
+  toggleMusic();
+  document.getElementById('soundBadge').style.display = 'none';
+});
+
+// Check if birthday is already revealed
 const currentTime = new Date().getTime();
 if(currentTime >= targetDate){
   countdownScreen.classList.add("hidden");
   birthdayScreen.classList.remove("hidden");
-  startIntenseConfetti();
-  startFireworksEffect();
+  startFullCelebration();
   birthdayRevealed = true;
   if(countdownInterval){
     clearInterval(countdownInterval);
@@ -630,8 +775,8 @@ const observer = new MutationObserver(function(mutations) {
 observer.observe(birthdayScreen, { attributes: true });
 
 console.log('🎂 Birthday Surprise Page Loaded! 🎉');
-console.log('Target Date:', new Date(targetDate).toLocaleString('en-PK', {timeZone: 'Asia/Karachi'}));
-console.log('Celebrate Again button is ready to use! ✨');
+console.log('✨ Features: Confetti + Music + Floating Hearts ✨');
+console.log('Click "Celebrate Again" for instant party! Click "Music On" for birthday song!');
 
 </script>
 
