@@ -144,26 +144,66 @@
       100%{transform:translateY(0px);}
     }
 
+    /* New Birthday Text Styles with Line Animations */
     .birthday-text{
       margin-top:25px;
       font-size:20px;
       line-height:1.9;
       max-width:700px;
       background:rgba(255,255,255,0.05);
-      padding:30px;
+      padding:40px;
       border-radius:30px;
       backdrop-filter:blur(5px);
-      animation:fadeIn 1.5s ease;
     }
 
-    @keyframes fadeIn{
+    .line{
+      opacity:0;
+      transform:translateY(20px);
+      animation:fadeInUp 0.6s ease forwards;
+      margin-bottom:20px;
+    }
+
+    .delay1{
+      animation-delay:0.3s;
+    }
+
+    .delay2{
+      animation-delay:0.6s;
+    }
+
+    .delay3{
+      animation-delay:0.9s;
+    }
+
+    .delay4{
+      animation-delay:1.2s;
+    }
+
+    .delay5{
+      animation-delay:1.5s;
+    }
+
+    .delay6{
+      animation-delay:1.8s;
+    }
+
+    .final-line{
+      font-size:28px;
+      font-family:'Great Vibes',cursive;
+      color:#ffb6ff;
+      margin-top:20px;
+      text-shadow:0 0 10px #ff4dff;
+      animation-delay:2.1s;
+    }
+
+    @keyframes fadeInUp{
       from{
         opacity:0;
-        transform:scale(0.9);
+        transform:translateY(20px);
       }
       to{
         opacity:1;
-        transform:scale(1);
+        transform:translateY(0);
       }
     }
 
@@ -265,7 +305,11 @@
 
       .birthday-text{
         font-size:16px;
-        padding:20px;
+        padding:25px;
+      }
+
+      .final-line{
+        font-size:24px;
       }
 
       .sound-overlay h2{
@@ -333,19 +377,16 @@
   <!-- BIRTHDAY SCREEN -->
   <div id="birthdayScreen" class="birthday-screen hidden">
 
-    <h1>Happy Birthday Bisma! 🎂</h1>
+    <h1>Happy Birthday Bisma 🎂</h1>
 
     <div class="birthday-text">
-      ✨ Some people become special quietly... ✨<br><br>
-
-      I just wanted to make something different for your birthday 🎈<br><br>
-
-      I hope this year brings you happiness, peace,
-      success, and beautiful memories.<br><br>
-
-      Stay amazing and keep shining like a star! 💖<br><br>
-
-      🌟 With lots of love and warm wishes 🌟
+      <div class="line">✨ Tonight is special...</div>
+      <div class="line delay1">because someone truly special was born today 🎂</div>
+      <div class="line delay2">Maybe you don't realize it,</div>
+      <div class="line delay3">but your presence makes people happier 🌙</div>
+      <div class="line delay4">So here's a little surprise,</div>
+      <div class="line delay5">made just to see you smile 💖</div>
+      <div class="final-line delay6">Happy Birthday, Bisma ✨</div>
     </div>
 
   </div>
@@ -358,10 +399,6 @@
 // OPTIMIZED CODE - NO INP ISSUES
 // ============================================
 
-// Use requestAnimationFrame for smooth animations
-// Debounce user interactions
-// Avoid long-running tasks in event handlers
-
 const bgVideo = document.getElementById('bgVideo');
 const bgAudio = document.getElementById('bgAudio');
 let audioEnabled = false;
@@ -371,7 +408,6 @@ let overlayRemoved = false;
 function showSoundOverlay() {
   if(overlayRemoved) return;
   
-  // Use requestAnimationFrame for smooth rendering
   requestAnimationFrame(() => {
     const overlay = document.createElement('div');
     overlay.className = 'sound-overlay';
@@ -385,12 +421,10 @@ function showSoundOverlay() {
     
     const enableBtn = document.getElementById('enableSoundBtn');
     
-    // Non-blocking event handler
     function enableSound(e) {
       if(e) e.stopPropagation();
       if(audioEnabled || overlayRemoved) return;
       
-      // Use setTimeout to avoid blocking the main thread
       setTimeout(() => {
         if(!audioEnabled) {
           bgAudio.volume = 0.5;
@@ -403,7 +437,6 @@ function showSoundOverlay() {
               bgVideo.volume = 0.3;
             }
             
-            // Smooth removal
             overlay.style.opacity = '0';
             setTimeout(() => {
               if(overlay && overlay.remove) {
@@ -418,7 +451,6 @@ function showSoundOverlay() {
       }, 10);
     }
     
-    // Use passive event listeners where possible
     if(enableBtn) {
       enableBtn.addEventListener('click', enableSound, { passive: false });
     }
@@ -426,7 +458,6 @@ function showSoundOverlay() {
   });
 }
 
-// Show overlay with delay to not block initial render
 window.addEventListener('load', () => {
   setTimeout(() => {
     if(!audioEnabled && !overlayRemoved) {
@@ -436,7 +467,7 @@ window.addEventListener('load', () => {
 });
 
 // ============================================
-// OPTIMIZED COUNTDOWN - No performance issues
+// OPTIMIZED COUNTDOWN
 // ============================================
 
 const targetDate = new Date("2026-06-01T00:00:00+05:00").getTime();
@@ -450,15 +481,12 @@ let countdownInterval;
 let confettiInterval;
 let birthdayRevealed = false;
 
-// Cache DOM elements for better performance
 const daysElement = document.getElementById("days");
 const hoursElement = document.getElementById("hours");
 const minutesElement = document.getElementById("minutes");
 const secondsElement = document.getElementById("seconds");
 
-// Optimized update function - minimal DOM operations
 function updateCountdown(){
-  // Use requestAnimationFrame for smooth updates
   requestAnimationFrame(() => {
     const now = new Date().getTime();
     const distance = targetDate - now;
@@ -476,13 +504,11 @@ function updateCountdown(){
     }
     
     if(!birthdayRevealed && distance > 0){
-      // Calculate all values at once
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
       const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
       
-      // Batch DOM updates
       daysElement.innerHTML = days;
       hoursElement.innerHTML = hours;
       minutesElement.innerHTML = minutes;
@@ -491,12 +517,11 @@ function updateCountdown(){
   });
 }
 
-// Use setInterval but ensure it doesn't accumulate
 countdownInterval = setInterval(updateCountdown, 1000);
 updateCountdown();
 
 // ============================================
-// OPTIMIZED CONFETTI - Non-blocking
+// OPTIMIZED CONFETTI
 // ============================================
 
 function startFullCelebration() {
@@ -504,7 +529,6 @@ function startFullCelebration() {
     clearInterval(confettiInterval);
   }
   
-  // Non-blocking confetti bursts using setTimeout
   const fireConfetti = () => {
     canvasConfetti({
       particleCount: 500,
@@ -515,7 +539,6 @@ function startFullCelebration() {
     });
   };
   
-  // Staggered confetti to avoid blocking
   fireConfetti();
   
   setTimeout(() => {
@@ -545,7 +568,6 @@ function startFullCelebration() {
       return;
     }
     
-    // Use requestAnimationFrame for each confetti burst
     requestAnimationFrame(() => {
       canvasConfetti({
         particleCount: 40,
@@ -562,13 +584,12 @@ function startFullCelebration() {
 }
 
 // ============================================
-// OPTIMIZED STARS GENERATION
+// STARS GENERATION
 // ============================================
 
 const starsContainer = document.getElementById("stars");
 const starCount = window.innerWidth < 768 ? 100 : 200;
 
-// Use DocumentFragment for better performance
 const fragment = document.createDocumentFragment();
 
 for(let i = 0; i < starCount; i++){
@@ -587,7 +608,7 @@ for(let i = 0; i < starCount; i++){
 starsContainer.appendChild(fragment);
 
 // ============================================
-// OPTIMIZED FLOATING HEARTS
+// FLOATING HEARTS
 // ============================================
 
 let heartsInterval = null;
@@ -622,7 +643,6 @@ function addFloatingHearts() {
   }, 800);
 }
 
-// Add CSS with will-change hint
 const styleTag = document.createElement('style');
 styleTag.textContent = `
   @keyframes floatUp {
@@ -632,7 +652,6 @@ styleTag.textContent = `
 `;
 document.head.appendChild(styleTag);
 
-// Check if birthday is already revealed
 const currentTime = new Date().getTime();
 if(currentTime >= targetDate){
   countdownScreen.classList.add("hidden");
@@ -645,7 +664,6 @@ if(currentTime >= targetDate){
   addFloatingHearts();
 }
 
-// Optimized observer with debounce
 let observerTimeout;
 const observer = new MutationObserver(function(mutations) {
   if(observerTimeout) clearTimeout(observerTimeout);
@@ -662,7 +680,6 @@ const observer = new MutationObserver(function(mutations) {
 
 observer.observe(birthdayScreen, { attributes: true });
 
-// Cleanup on page unload
 window.addEventListener('beforeunload', () => {
   if(countdownInterval) clearInterval(countdownInterval);
   if(confettiInterval) clearInterval(confettiInterval);
@@ -671,8 +688,7 @@ window.addEventListener('beforeunload', () => {
 });
 
 console.log('🎂 Happy Birthday Bisma! 🎉');
-console.log('✅ INP issue fixed - Optimized event handlers');
-console.log('🎵 Click to enable sound');
+console.log('✨ New animated birthday message added! ✨');
 
 </script>
 
