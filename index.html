@@ -3,641 +3,695 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Midnight Holds A Secret</title>
+  <title>Happy Birthday Bisma! 🎂</title>
 
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
 
+  <!-- Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
-    :root{
-      --bg1:#05040b;
-      --bg2:#0a0712;
-      --bg3:#12071a;
-      --pink:#f0a0f0;
-      --pink2:#d96bd9;
-      --white:#f5edf7;
-      --glass:rgba(255,255,255,.075);
-      --glass-border:rgba(255,255,255,.14);
-      --shadow:rgba(255, 120, 220, .35);
-    }
-
     *{
-      box-sizing:border-box;
       margin:0;
       padding:0;
-    }
-
-    html,body{
-      min-height:100%;
+      box-sizing:border-box;
     }
 
     body{
       font-family:'Poppins',sans-serif;
-      color:var(--white);
-      overflow:hidden;
-      background:
-        radial-gradient(circle at 18% 22%, rgba(226,123,219,.16) 0 6%, transparent 18%),
-        radial-gradient(circle at 78% 16%, rgba(128,96,255,.18) 0 7%, transparent 20%),
-        radial-gradient(circle at 50% 100%, rgba(255,101,180,.12) 0 10%, transparent 30%),
-        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 50%, var(--bg3) 100%);
-    }
-
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.02), transparent 18%),
-        radial-gradient(circle at 50% 48%, rgba(255,160,230,.10), transparent 38%),
-        radial-gradient(circle at 50% 60%, rgba(0,0,0,.18), transparent 55%);
-      backdrop-filter: blur(1px);
-      z-index:0;
-    }
-
-    body::after{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      background:
-        linear-gradient(90deg, rgba(0,0,0,.35) 0%, transparent 9%, transparent 91%, rgba(0,0,0,.35) 100%),
-        linear-gradient(180deg, rgba(0,0,0,.28) 0%, transparent 20%, transparent 80%, rgba(0,0,0,.32) 100%);
-      z-index:1;
-    }
-
-    .stars{
-      position:fixed;
-      inset:0;
-      z-index:1;
-      pointer-events:none;
-      overflow:hidden;
-    }
-
-    .star{
-      position:absolute;
-      border-radius:50%;
-      background:rgba(255,255,255,.95);
-      animation:twinkle 2.8s infinite ease-in-out alternate;
-      filter:drop-shadow(0 0 6px rgba(255,255,255,.4));
-    }
-
-    @keyframes twinkle{
-      from{opacity:.18; transform:scale(.8);}
-      to{opacity:1; transform:scale(1.35);}
-    }
-
-    .scene{
-      position:relative;
-      z-index:2;
+      background:#050510;
+      overflow-x:hidden;
+      color:white;
       min-height:100vh;
-      width:100%;
       display:flex;
-      align-items:center;
       justify-content:center;
-      padding:24px 16px;
-    }
-
-    .screen{
-      width:min(1180px, 100%);
+      align-items:center;
       text-align:center;
+      padding:20px;
       position:relative;
     }
 
-    .hidden{ display:none; }
-
-    /* COUNTDOWN SCREEN */
-    .title{
-      font-family:'Great Vibes',cursive;
-      font-size:clamp(3rem, 6vw, 6rem);
-      line-height:1.02;
-      color:#f3a1f1;
-      text-shadow:
-        0 0 10px rgba(255,120,230,.55),
-        0 0 24px rgba(255,120,230,.45),
-        0 0 48px rgba(255,120,230,.22);
-      margin-bottom:14px;
-      letter-spacing:.5px;
-      animation:glow 2.4s ease-in-out infinite alternate;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:14px;
-      flex-wrap:wrap;
+    /* Background Video */
+    #bgVideo{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      z-index:0;
+      opacity:0.4;
+      pointer-events:none;
     }
 
-    .title .spark{
-      font-size:.72em;
-      filter:drop-shadow(0 0 10px rgba(255,200,120,.35));
+    /* Hidden Audio Element */
+    #bgAudio{
+      display:none;
+    }
+
+    .container{
+      z-index:2;
+      max-width:800px;
+      width:100%;
+    }
+
+    .title{
+      font-size:70px;
+      font-family:'Great Vibes',cursive;
+      color:#ffb6ff;
+      text-shadow:0 0 20px #ff4dff;
+      animation:glow 2s infinite alternate;
+      will-change:transform;
     }
 
     @keyframes glow{
       from{
-        text-shadow:
-          0 0 8px rgba(255,120,230,.45),
-          0 0 18px rgba(255,120,230,.28);
+        text-shadow:0 0 10px #ff4dff;
       }
       to{
         text-shadow:
-          0 0 14px rgba(255,120,230,.70),
-          0 0 28px rgba(255,120,230,.55),
-          0 0 52px rgba(255,120,230,.28);
+        0 0 20px #ff4dff,
+        0 0 40px #ff4dff,
+        0 0 60px #ff4dff;
       }
     }
 
-    .countdown-wrap{
-      margin-top:26px;
+    .countdown{
       display:flex;
       justify-content:center;
-    }
-
-    .countdown{
-      display:grid;
-      grid-template-columns:repeat(4, minmax(120px, 1fr));
-      gap:22px;
-      width:min(690px, 100%);
+      gap:15px;
+      margin-top:30px;
+      flex-wrap:wrap;
     }
 
     .box{
-      background:var(--glass);
-      border:1px solid var(--glass-border);
-      border-radius:22px;
-      padding:26px 18px 20px;
-      min-height:160px;
-      box-shadow:
-        0 12px 32px rgba(0,0,0,.22),
-        inset 0 1px 0 rgba(255,255,255,.08),
-        0 0 28px rgba(255, 120, 220, .06);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      transition:transform .2s ease, box-shadow .2s ease;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.1);
+      backdrop-filter:blur(10px);
+      padding:20px;
+      border-radius:20px;
+      min-width:110px;
+      box-shadow:0 0 20px rgba(255,255,255,0.08);
+      transition:transform 0.2s ease;
+      will-change:transform;
     }
 
     .box:hover{
-      transform:translateY(-4px);
-      box-shadow:
-        0 14px 36px rgba(0,0,0,.26),
-        inset 0 1px 0 rgba(255,255,255,.10),
-        0 0 36px rgba(255, 120, 220, .10);
+      transform:translateY(-5px);
     }
 
     .number{
-      font-size:clamp(2.8rem, 4vw, 4.6rem);
-      line-height:1;
-      color:#f1a8f1;
-      font-weight:600;
-      letter-spacing:.02em;
-      text-shadow:0 0 12px rgba(255,180,240,.18);
+      font-size:40px;
+      font-weight:bold;
+      color:#ffb6ff;
     }
 
     .label{
-      margin-top:18px;
-      font-size:1rem;
-      color:rgba(255,255,255,.78);
-      letter-spacing:.01em;
+      font-size:14px;
+      margin-top:5px;
+      opacity:0.8;
     }
 
     .message{
-      margin-top:36px;
-      font-size:clamp(1.08rem, 1.6vw, 1.38rem);
-      line-height:1.55;
-      color:rgba(255,255,255,.90);
-      text-shadow:0 0 10px rgba(255,255,255,.05);
+      margin-top:35px;
+      font-size:18px;
+      opacity:0.9;
+      line-height:1.8;
     }
 
-    .message .line1{
-      display:block;
+    .hidden{
+      display:none;
     }
 
-    .message .line2{
-      display:block;
-      color:#f0d4f4;
-    }
-
-    /* BIRTHDAY SCREEN */
-    .birthday-screen{
-      width:min(1000px, 100%);
-      position:relative;
-      min-height:82vh;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:flex-start;
-      padding-top:24px;
-    }
-
-    .birthday-title{
+    .birthday-screen h1{
+      font-size:90px;
       font-family:'Great Vibes',cursive;
-      font-size:clamp(4rem, 7vw, 6.6rem);
-      line-height:.9;
-      color:#f3a1f1;
+      color:#ffb6ff;
       text-shadow:
-        0 0 10px rgba(255,120,230,.56),
-        0 0 24px rgba(255,120,230,.42),
-        0 0 48px rgba(255,120,230,.24);
+      0 0 10px #ff4dff,
+      0 0 20px #ff4dff,
+      0 0 40px #ff4dff;
       animation:float 3s ease-in-out infinite;
-      margin-bottom:20px;
+      margin-bottom:30px;
+      will-change:transform;
     }
 
     @keyframes float{
-      0%{transform:translateY(0);}
-      50%{transform:translateY(-8px);}
-      100%{transform:translateY(0);}
+      0%{transform:translateY(0px);}
+      50%{transform:translateY(-10px);}
+      100%{transform:translateY(0px);}
     }
 
-    .birthday-panel{
-      width:min(560px, 92vw);
-      background:rgba(16, 12, 24, .40);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:24px;
-      padding:28px 24px 22px;
-      box-shadow:
-        0 12px 34px rgba(0,0,0,.25),
-        inset 0 1px 0 rgba(255,255,255,.06);
-      backdrop-filter: blur(7px);
-      -webkit-backdrop-filter: blur(7px);
+    /* New Birthday Text Styles with Line Animations */
+    .birthday-text{
+      margin-top:25px;
+      font-size:20px;
+      line-height:1.9;
+      max-width:700px;
+      background:rgba(255,255,255,0.05);
+      padding:40px;
+      border-radius:30px;
+      backdrop-filter:blur(5px);
     }
 
     .line{
       opacity:0;
-      transform:translateY(14px);
-      animation:fadeUp .7s ease forwards;
-      margin:10px 0;
-      font-size:clamp(1rem, 1.6vw, 1.25rem);
-      line-height:1.7;
-      color:rgba(255,255,255,.95);
+      transform:translateY(20px);
+      animation:fadeInUp 0.6s ease forwards;
+      margin-bottom:20px;
     }
 
-    .delay1{ animation-delay:.25s; }
-    .delay2{ animation-delay:.55s; }
-    .delay3{ animation-delay:.85s; }
-    .delay4{ animation-delay:1.15s; }
-    .delay5{ animation-delay:1.45s; }
+    .delay1{
+      animation-delay:0.3s;
+    }
+
+    .delay2{
+      animation-delay:0.6s;
+    }
+
+    .delay3{
+      animation-delay:0.9s;
+    }
+
+    .delay4{
+      animation-delay:1.2s;
+    }
+
+    .delay5{
+      animation-delay:1.5s;
+    }
+
+    .delay6{
+      animation-delay:1.8s;
+    }
 
     .final-line{
-      opacity:0;
-      transform:translateY(10px) scale(.98);
-      animation:finalIn .9s ease forwards;
-      animation-delay:1.85s;
-      margin-top:18px;
+      font-size:28px;
       font-family:'Great Vibes',cursive;
-      font-size:clamp(2rem, 4vw, 3rem);
-      color:#f3a1f1;
-      text-shadow:0 0 12px rgba(255,120,230,.45);
+      color:#ffb6ff;
+      margin-top:20px;
+      text-shadow:0 0 10px #ff4dff;
+      animation-delay:2.1s;
     }
 
-    @keyframes fadeUp{
+    @keyframes fadeInUp{
+      from{
+        opacity:0;
+        transform:translateY(20px);
+      }
       to{
         opacity:1;
         transform:translateY(0);
       }
     }
 
-    @keyframes finalIn{
-      to{
-        opacity:1;
-        transform:translateY(0) scale(1);
-      }
-    }
-
-    /* Decorative sides */
-    .decor{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .curtain{
-      position:absolute;
+    .stars{
+      position:fixed;
+      width:100%;
+      height:100%;
+      overflow:hidden;
       top:0;
-      bottom:0;
-      width:72px;
-      background:
-        linear-gradient(90deg, rgba(0,0,0,.45), rgba(255,95,190,.10), rgba(0,0,0,.36));
-      filter:blur(.2px);
-      opacity:.65;
+      left:0;
+      z-index:0;
+      pointer-events:none;
     }
 
-    .curtain.left{ left:0; }
-    .curtain.right{ right:0; }
-
-    .balloon{
+    .star{
       position:absolute;
-      font-size:clamp(3rem, 5vw, 5.2rem);
-      filter:drop-shadow(0 0 18px rgba(255,85,200,.55));
-      animation:balloonFloat 4.8s ease-in-out infinite;
-      opacity:.95;
+      width:2px;
+      height:2px;
+      background:white;
+      border-radius:50%;
+      animation:twinkle 2s infinite alternate;
     }
 
-    .balloon.left{
-      left:24px;
-      top:88px;
-      transform:rotate(-8deg);
+    @keyframes twinkle{
+      from{opacity:0.2; transform:scale(1);}
+      to{opacity:1; transform:scale(1.5);}
     }
 
-    .balloon.right{
-      right:20px;
-      top:74px;
-      transform:rotate(10deg);
-      animation-delay:.6s;
+    /* Sound Overlay - Optimized */
+    .sound-overlay{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,0.9);
+      z-index:9999;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      cursor:pointer;
+      backdrop-filter:blur(10px);
+      animation:fadeIn 0.3s ease;
+      will-change:opacity;
     }
 
-    .cake{
-      position:absolute;
-      right:40px;
-      bottom:18px;
-      font-size:clamp(3rem, 5vw, 5.3rem);
-      filter:drop-shadow(0 0 18px rgba(255,170,120,.48));
-      animation:cakeFloat 3.6s ease-in-out infinite;
+    .sound-overlay h2{
+      font-size:30px;
+      color:#ffb6ff;
+      margin-bottom:20px;
+      font-family:'Great Vibes',cursive;
     }
 
-    .flowers{
-      position:absolute;
-      left:24px;
-      bottom:20px;
-      font-size:clamp(2.8rem, 4vw, 4.4rem);
-      filter:drop-shadow(0 0 16px rgba(255,120,220,.35));
-      opacity:.95;
+    .sound-overlay p{
+      font-size:18px;
+      margin-top:10px;
     }
 
-    @keyframes balloonFloat{
-      0%,100%{ transform:translateY(0) rotate(-8deg); }
-      50%{ transform:translateY(-12px) rotate(-3deg); }
+    .sound-overlay button{
+      margin-top:30px;
+      padding:15px 40px;
+      background:linear-gradient(135deg, #ff4dff, #ff6b6b);
+      border:none;
+      border-radius:50px;
+      color:white;
+      font-size:18px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:transform 0.2s ease;
+      will-change:transform;
     }
 
-    @keyframes cakeFloat{
-      0%,100%{ transform:translateY(0); }
-      50%{ transform:translateY(-8px); }
+    .sound-overlay button:hover{
+      transform:scale(1.05);
     }
 
-    .sparkle-trace{
-      position:absolute;
-      left:50%;
-      top:84px;
-      width:220px;
-      height:1px;
-      transform:translateX(-50%);
-      background:linear-gradient(90deg, transparent, rgba(255,171,233,.9), transparent);
-      opacity:.65;
+    .sound-overlay button:active{
+      transform:scale(0.95);
     }
 
-    .sparkle-trace::before,
-    .sparkle-trace::after{
-      content:"✦";
-      position:absolute;
-      top:-14px;
-      color:#f3a1f1;
-      text-shadow:0 0 8px rgba(255,120,230,.55);
-    }
-
-    .sparkle-trace::before{ left:0; }
-    .sparkle-trace::after{ right:0; }
-
-    @media (max-width: 900px){
-      .countdown{
-        grid-template-columns:repeat(2, minmax(120px, 1fr));
-        width:min(420px, 100%);
-      }
-
-      .box{
-        min-height:150px;
-      }
-    }
-
-    @media (max-width: 540px){
-      .scene{
-        padding:18px 12px;
-      }
-
+    @media(max-width:768px){
       .title{
-        gap:8px;
+        font-size:50px;
       }
 
-      .countdown{
-        gap:14px;
-        width:100%;
+      .birthday-screen h1{
+        font-size:55px;
+      }
+
+      .number{
+        font-size:28px;
       }
 
       .box{
-        min-height:134px;
-        padding:20px 14px 16px;
+        min-width:80px;
+        padding:15px;
       }
 
-      .label{
-        margin-top:14px;
-        font-size:.92rem;
+      .birthday-text{
+        font-size:16px;
+        padding:25px;
       }
 
-      .message{
-        margin-top:28px;
-        font-size:1.02rem;
+      .final-line{
+        font-size:24px;
       }
 
-      .birthday-screen{
-        min-height:78vh;
-      }
-
-      .birthday-panel{
-        padding:22px 18px 18px;
-      }
-
-      .balloon.left,
-      .balloon.right,
-      .cake,
-      .flowers{
-        transform:scale(.82);
-      }
-
-      .curtain{
-        width:42px;
+      .sound-overlay h2{
+        font-size:24px;
+        padding:20px;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="stars" id="stars"></div>
 
-  <main class="scene">
-    <!-- COUNTDOWN -->
-    <section id="countdownScreen" class="screen" aria-live="polite">
-      <div class="title">
-        <span>Midnight Holds A Secret</span>
-        <span class="spark">✨</span>
+<!-- Background Video -->
+<video id="bgVideo" autoplay loop muted playsinline>
+  <source src="music.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+<!-- Hidden Audio Element -->
+<audio id="bgAudio" loop preload="auto">
+  <source src="music.mp4" type="audio/mp4">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="stars" id="stars"></div>
+
+<div class="container">
+
+  <!-- COUNTDOWN SCREEN -->
+  <div id="countdownScreen" aria-live="polite">
+
+    <div class="title">
+    💖Midnight Holds A Secret 💫
+    </div>
+
+    <div class="countdown">
+
+      <div class="box">
+        <div class="number" id="days" aria-label="Days remaining">0</div>
+        <div class="label">Days</div>
       </div>
 
-      <div class="countdown-wrap">
-        <div class="countdown">
-          <div class="box">
-            <div class="number" id="days">07</div>
-            <div class="label">Days</div>
-          </div>
-          <div class="box">
-            <div class="number" id="hours">13</div>
-            <div class="label">Hours</div>
-          </div>
-          <div class="box">
-            <div class="number" id="minutes">08</div>
-            <div class="label">Minutes</div>
-          </div>
-          <div class="box">
-            <div class="number" id="seconds">12</div>
-            <div class="label">Seconds</div>
-          </div>
-        </div>
+      <div class="box">
+        <div class="number" id="hours" aria-label="Hours remaining">0</div>
+        <div class="label">Hours</div>
       </div>
 
-      <div class="message">
-        <span class="line1">And when the countdown ends,</span>
-        <span class="line2">a beautiful story begins 🌙</span>
-      </div>
-    </section>
-
-    <!-- BIRTHDAY -->
-    <section id="birthdayScreen" class="birthday-screen hidden">
-      <div class="decor">
-        <div class="curtain left"></div>
-        <div class="curtain right"></div>
-        <div class="balloon left">💗</div>
-        <div class="balloon right">🎈</div>
-        <div class="flowers">🌸🌸</div>
-        <div class="cake">🎂</div>
+      <div class="box">
+        <div class="number" id="minutes" aria-label="Minutes remaining">0</div>
+        <div class="label">Minutes</div>
       </div>
 
-      <div class="birthday-title">Happy Birthday<br/>Bisma!</div>
-      <div class="sparkle-trace"></div>
-
-      <div class="birthday-panel">
-        <div class="line">✨ Some people enter life quietly...</div>
-        <div class="line delay1">and somehow become unforgettable 🌙</div>
-        <div class="line delay2">So tonight,</div>
-        <div class="line delay3">this little corner of the internet</div>
-        <div class="line delay4">exists just to celebrate you 💖</div>
-        <div class="final-line delay5">Happy Birthday, Bisma 🎂</div>
+      <div class="box">
+        <div class="number" id="seconds" aria-label="Seconds remaining">0</div>
+        <div class="label">Seconds</div>
       </div>
-    </section>
-  </main>
 
-  <script>
-    const targetDate = new Date("2026-06-01T00:00:00+05:00").getTime();
-    // TESTING:
-    // const targetDate = new Date().getTime() - 1000;
+    </div>
 
-    const countdownScreen = document.getElementById("countdownScreen");
-    const birthdayScreen = document.getElementById("birthdayScreen");
+    <div class="message">
+      And when the countdown ends,
+a beautiful story begins 🌙
+    </div>
+  </div>
 
-    const daysEl = document.getElementById("days");
-    const hoursEl = document.getElementById("hours");
-    const minutesEl = document.getElementById("minutes");
-    const secondsEl = document.getElementById("seconds");
+  <!-- BIRTHDAY SCREEN -->
+  <div id="birthdayScreen" class="birthday-screen hidden">
 
-    let countdownInterval = null;
-    let confettiInterval = null;
-    let revealed = false;
+    <h1>Happy Birthday Bisma 🎂</h1>
 
-    function pad(n){
-      return String(n).padStart(2, "0");
-    }
+    <div class="birthday-text">
+      <div class="line">✨ Tonight is special...</div>
+      <div class="line delay1">because someone truly special was born today 🎂</div>
+      <div class="line delay2">Maybe you don't realize it,</div>
+      <div class="line delay3">but your presence makes people happier 🌙</div>
+      <div class="line delay4">So here's a little surprise,</div>
+      <div class="line delay5">made just to see you smile 💖</div>
+      <div class="final-line delay6">Happy Birthday, Bisma ✨</div>
+    </div>
 
-    function renderCountdown(){
-      const now = Date.now();
-      const diff = targetDate - now;
+  </div>
 
-      if(diff <= 0 && !revealed){
-        revealed = true;
-        countdownScreen.classList.add("hidden");
-        birthdayScreen.classList.remove("hidden");
-        startCelebration();
-        if(countdownInterval) clearInterval(countdownInterval);
-        return;
-      }
+</div>
 
-      if(diff > 0){
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+<script>
 
-        daysEl.textContent = pad(days);
-        hoursEl.textContent = pad(hours);
-        minutesEl.textContent = pad(minutes);
-        secondsEl.textContent = pad(seconds);
-      }
-    }
+// ============================================
+// OPTIMIZED CODE - NO INP ISSUES
+// ============================================
 
-    function startCelebration(){
-      if(typeof confetti !== "function") return;
+const bgVideo = document.getElementById('bgVideo');
+const bgAudio = document.getElementById('bgAudio');
+let audioEnabled = false;
+let overlayRemoved = false;
 
-      confetti({
-        particleCount: 180,
-        spread: 95,
-        origin: { y: 0.55 },
-        colors: ["#f0a0f0", "#ffd1f0", "#ff7ed5", "#ffd86b"]
-      });
-
+// Optimized sound overlay with event delegation and non-blocking
+function showSoundOverlay() {
+  if(overlayRemoved) return;
+  
+  requestAnimationFrame(() => {
+    const overlay = document.createElement('div');
+    overlay.className = 'sound-overlay';
+    overlay.setAttribute('aria-label', 'Enable sound dialog');
+    overlay.innerHTML = `
+      <h2>🎵 Click anywhere to enable sound 🎵</h2>
+      <p>✨ For the complete birthday experience ✨</p>
+      <button id="enableSoundBtn">🔊 Enable Sound & Music</button>
+    `;
+    document.body.appendChild(overlay);
+    
+    const enableBtn = document.getElementById('enableSoundBtn');
+    
+    function enableSound(e) {
+      if(e) e.stopPropagation();
+      if(audioEnabled || overlayRemoved) return;
+      
       setTimeout(() => {
-        confetti({
-          particleCount: 120,
-          spread: 120,
-          origin: { x: 0.18, y: 0.68 },
-          colors: ["#f0a0f0", "#ffd1f0", "#ff7ed5"]
-        });
-        confetti({
-          particleCount: 120,
-          spread: 120,
-          origin: { x: 0.82, y: 0.68 },
-          colors: ["#f0a0f0", "#ffd1f0", "#ff7ed5"]
-        });
-      }, 240);
-
-      const end = Date.now() + 9000;
-      confettiInterval = setInterval(() => {
-        if(Date.now() > end){
-          clearInterval(confettiInterval);
-          return;
+        if(!audioEnabled) {
+          bgAudio.volume = 0.5;
+          bgAudio.play().then(() => {
+            audioEnabled = true;
+            overlayRemoved = true;
+            
+            if(bgVideo) {
+              bgVideo.muted = false;
+              bgVideo.volume = 0.3;
+            }
+            
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+              if(overlay && overlay.remove) {
+                overlay.remove();
+              }
+            }, 300);
+            
+          }).catch((error) => {
+            console.log('Audio play failed:', error);
+          });
         }
-        confetti({
-          particleCount: 22,
-          spread: 70,
-          origin: { x: Math.random(), y: Math.random() * 0.45 + 0.2 },
-          colors: ["#f0a0f0", "#ffd1f0", "#ff7ed5", "#ffffff"]
-        });
-      }, 180);
+      }, 10);
     }
-
-    function createStars(){
-      const stars = document.getElementById("stars");
-      const total = window.innerWidth < 700 ? 95 : 170;
-
-      for(let i = 0; i < total; i++){
-        const s = document.createElement("span");
-        s.className = "star";
-        const size = Math.random() * 2.7 + 1;
-        s.style.width = `${size}px`;
-        s.style.height = `${size}px`;
-        s.style.left = `${Math.random() * 100}%`;
-        s.style.top = `${Math.random() * 100}%`;
-        s.style.animationDelay = `${Math.random() * 2.6}s`;
-        s.style.animationDuration = `${Math.random() * 3 + 1.8}s`;
-        s.style.opacity = `${Math.random() * 0.85 + 0.15}`;
-        stars.appendChild(s);
-      }
+    
+    if(enableBtn) {
+      enableBtn.addEventListener('click', enableSound, { passive: false });
     }
+    overlay.addEventListener('click', enableSound, { passive: false });
+  });
+}
 
-    createStars();
-    renderCountdown();
-    countdownInterval = setInterval(renderCountdown, 1000);
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    if(!audioEnabled && !overlayRemoved) {
+      showSoundOverlay();
+    }
+  }, 100);
+});
 
-    if(Date.now() >= targetDate){
+// ============================================
+// OPTIMIZED COUNTDOWN
+// ============================================
+
+const targetDate = new Date("2026-06-01T00:00:00+05:00").getTime();
+// FOR TESTING - Uncomment to test immediately
+// const targetDate = new Date().getTime() - 1000;
+
+const countdownScreen = document.getElementById("countdownScreen");
+const birthdayScreen = document.getElementById("birthdayScreen");
+
+let countdownInterval;
+let confettiInterval;
+let birthdayRevealed = false;
+
+const daysElement = document.getElementById("days");
+const hoursElement = document.getElementById("hours");
+const minutesElement = document.getElementById("minutes");
+const secondsElement = document.getElementById("seconds");
+
+function updateCountdown(){
+  requestAnimationFrame(() => {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if(distance <= 0 && !birthdayRevealed){
       countdownScreen.classList.add("hidden");
       birthdayScreen.classList.remove("hidden");
-      revealed = true;
-      startCelebration();
-      if(countdownInterval) clearInterval(countdownInterval);
+      startFullCelebration();
+      birthdayRevealed = true;
+      
+      if(countdownInterval){
+        clearInterval(countdownInterval);
+      }
+      return;
     }
-  </script>
+    
+    if(!birthdayRevealed && distance > 0){
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      daysElement.innerHTML = days;
+      hoursElement.innerHTML = hours;
+      minutesElement.innerHTML = minutes;
+      secondsElement.innerHTML = seconds;
+    }
+  });
+}
+
+countdownInterval = setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// ============================================
+// OPTIMIZED CONFETTI
+// ============================================
+
+function startFullCelebration() {
+  if(confettiInterval){
+    clearInterval(confettiInterval);
+  }
+  
+  const fireConfetti = () => {
+    canvasConfetti({
+      particleCount: 500,
+      spread: 180,
+      origin: { y: 0.5 },
+      startVelocity: 35,
+      colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e', '#ff0000', '#00ff00', '#ff00ff']
+    });
+  };
+  
+  fireConfetti();
+  
+  setTimeout(() => {
+    canvasConfetti({
+      particleCount: 300,
+      spread: 150,
+      origin: { y: 0.6, x: 0.2 },
+      startVelocity: 30
+    });
+  }, 200);
+  
+  setTimeout(() => {
+    canvasConfetti({
+      particleCount: 300,
+      spread: 150,
+      origin: { y: 0.6, x: 0.8 },
+      startVelocity: 30
+    });
+  }, 400);
+  
+  const duration = 15000;
+  const animationEnd = Date.now() + duration;
+  
+  confettiInterval = setInterval(() => {
+    if(Date.now() >= animationEnd){
+      clearInterval(confettiInterval);
+      return;
+    }
+    
+    requestAnimationFrame(() => {
+      canvasConfetti({
+        particleCount: 40,
+        spread: 100,
+        origin: {
+          x: Math.random(),
+          y: Math.random() * 0.5 + 0.3
+        },
+        startVelocity: Math.random() * 20 + 15,
+        colors: ['#ff4dff', '#ffb6ff', '#ffd700', '#ff6b6b']
+      });
+    });
+  }, 150);
+}
+
+// ============================================
+// STARS GENERATION
+// ============================================
+
+const starsContainer = document.getElementById("stars");
+const starCount = window.innerWidth < 768 ? 100 : 200;
+
+const fragment = document.createDocumentFragment();
+
+for(let i = 0; i < starCount; i++){
+  const star = document.createElement("div");
+  star.classList.add("star");
+  star.style.top = Math.random() * 100 + "%";
+  star.style.left = Math.random() * 100 + "%";
+  const size = Math.random() * 3 + 1;
+  star.style.width = size + "px";
+  star.style.height = size + "px";
+  star.style.animationDuration = (Math.random() * 4 + 1) + "s";
+  star.style.animationDelay = (Math.random() * 2) + "s";
+  fragment.appendChild(star);
+}
+
+starsContainer.appendChild(fragment);
+
+// ============================================
+// FLOATING HEARTS
+// ============================================
+
+let heartsInterval = null;
+
+function addFloatingHearts() {
+  if(!birthdayRevealed || heartsInterval) return;
+  
+  heartsInterval = setInterval(() => {
+    if(!birthdayRevealed) {
+      if(heartsInterval) {
+        clearInterval(heartsInterval);
+        heartsInterval = null;
+      }
+      return;
+    }
+    
+    const heart = document.createElement('div');
+    const heartsList = ['💖', '💕', '💗', '💓', '💝', '🎂', '🎈', '✨'];
+    heart.innerHTML = heartsList[Math.floor(Math.random() * heartsList.length)];
+    heart.style.position = 'fixed';
+    heart.style.left = Math.random() * 100 + '%';
+    heart.style.bottom = '-20px';
+    heart.style.fontSize = (Math.random() * 25 + 20) + 'px';
+    heart.style.opacity = Math.random() * 0.6 + 0.3;
+    heart.style.pointerEvents = 'none';
+    heart.style.zIndex = '999';
+    heart.style.animation = 'floatUp 4s ease-in forwards';
+    heart.style.willChange = 'transform';
+    document.body.appendChild(heart);
+    
+    setTimeout(() => heart.remove(), 4000);
+  }, 800);
+}
+
+const styleTag = document.createElement('style');
+styleTag.textContent = `
+  @keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+  }
+`;
+document.head.appendChild(styleTag);
+
+const currentTime = new Date().getTime();
+if(currentTime >= targetDate){
+  countdownScreen.classList.add("hidden");
+  birthdayScreen.classList.remove("hidden");
+  startFullCelebration();
+  birthdayRevealed = true;
+  if(countdownInterval){
+    clearInterval(countdownInterval);
+  }
+  addFloatingHearts();
+}
+
+let observerTimeout;
+const observer = new MutationObserver(function(mutations) {
+  if(observerTimeout) clearTimeout(observerTimeout);
+  observerTimeout = setTimeout(() => {
+    mutations.forEach(function(mutation) {
+      if(mutation.attributeName === 'class') {
+        if(!birthdayScreen.classList.contains('hidden') && !birthdayRevealed) {
+          addFloatingHearts();
+        }
+      }
+    });
+  }, 50);
+});
+
+observer.observe(birthdayScreen, { attributes: true });
+
+window.addEventListener('beforeunload', () => {
+  if(countdownInterval) clearInterval(countdownInterval);
+  if(confettiInterval) clearInterval(confettiInterval);
+  if(heartsInterval) clearInterval(heartsInterval);
+  if(observer) observer.disconnect();
+});
+
+console.log('🎂 Happy Birthday Bisma! 🎉');
+console.log('✨ New animated birthday message added! ✨');
+
+</script>
+
 </body>
 </html>
