@@ -1,697 +1,570 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>I Love You🫀</title>
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
-
-  <!-- Confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📖 Tarjuma Quran · Vocabulary MCQs</title>
   <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    body{
-      font-family:'Poppins',sans-serif;
-      background:#050510;
-      overflow-x:hidden;
-      color:white;
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      text-align:center;
-      padding:20px;
-      position:relative;
+    body {
+      background: #f5f1eb;
+      font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+      padding: 2rem 1rem;
+      direction: rtl;
     }
 
-    /* Background Video */
-    #bgVideo{
-      position:fixed;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      z-index:0;
-      opacity:0.4;
-      pointer-events:none;
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 32px;
+      padding: 2rem 1.8rem;
+      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2);
+      border: 1px solid #e9dfd3;
     }
 
-    /* Hidden Audio Element */
-    #bgAudio{
-      display:none;
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 600;
+      color: #2d3e4b;
+      text-align: center;
+      letter-spacing: -0.5px;
+      border-bottom: 3px solid #d8c5b0;
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
-    .container{
-      z-index:2;
-      max-width:800px;
-      width:100%;
+    h1 small {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #6f7d87;
+      background: #edf2f5;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
     }
 
-    .title{
-      font-size:70px;
-      font-family:'Great Vibes',cursive;
-      color:#ffb6ff;
-      text-shadow:0 0 20px #ff4dff;
-      animation:glow 2s infinite alternate;
-      will-change:transform;
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      background: #f8f4ef;
+      padding: 0.8rem 1.5rem;
+      border-radius: 60px;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      color: #2d3e4b;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
-    @keyframes glow{
-      from{
-        text-shadow:0 0 10px #ff4dff;
+    .stats span {
+      background: white;
+      padding: 0.2rem 1.2rem;
+      border-radius: 40px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .card {
+      background: #fcfaf8;
+      border-radius: 28px;
+      padding: 1.8rem 1.8rem 1.2rem;
+      margin-bottom: 1.8rem;
+      border: 1px solid #e4d8cc;
+      transition: all 0.1s ease;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.8rem;
+    }
+
+    .surah-badge {
+      background: #b8a48c;
+      color: white;
+      font-size: 0.8rem;
+      padding: 0.2rem 1rem;
+      border-radius: 40px;
+      letter-spacing: 0.3px;
+      font-weight: 500;
+    }
+
+    .word-arabic {
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: #1f2a33;
+      line-height: 1.4;
+      background: #f0ebe4;
+      padding: 0.2rem 1.4rem;
+      border-radius: 60px;
+      display: inline-block;
+      margin-top: 0.2rem;
+      margin-bottom: 0.8rem;
+      border: 1px solid #dad0c4;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+    }
+
+    @media (max-width: 550px) {
+      .options-grid {
+        grid-template-columns: 1fr;
       }
-      to{
-        text-shadow:
-        0 0 20px #ff4dff,
-        0 0 40px #ff4dff,
-        0 0 60px #ff4dff;
+      .container {
+        padding: 1.2rem;
       }
-    }
-
-    .countdown{
-      display:flex;
-      justify-content:center;
-      gap:15px;
-      margin-top:30px;
-      flex-wrap:wrap;
-    }
-
-    .box{
-      background:rgba(255,255,255,0.08);
-      border:1px solid rgba(255,255,255,0.1);
-      backdrop-filter:blur(10px);
-      padding:20px;
-      border-radius:20px;
-      min-width:110px;
-      box-shadow:0 0 20px rgba(255,255,255,0.08);
-      transition:transform 0.2s ease;
-      will-change:transform;
-    }
-
-    .box:hover{
-      transform:translateY(-5px);
-    }
-
-    .number{
-      font-size:40px;
-      font-weight:bold;
-      color:#ffb6ff;
-    }
-
-    .label{
-      font-size:14px;
-      margin-top:5px;
-      opacity:0.8;
-    }
-
-    .message{
-      margin-top:35px;
-      font-size:18px;
-      opacity:0.9;
-      line-height:1.8;
-    }
-
-    .hidden{
-      display:none;
-    }
-
-    .birthday-screen h1{
-      font-size:90px;
-      font-family:'Great Vibes',cursive;
-      color:#ffb6ff;
-      text-shadow:
-      0 0 10px #ff4dff,
-      0 0 20px #ff4dff,
-      0 0 40px #ff4dff;
-      animation:float 3s ease-in-out infinite;
-      margin-bottom:30px;
-      will-change:transform;
-    }
-
-    @keyframes float{
-      0%{transform:translateY(0px);}
-      50%{transform:translateY(-10px);}
-      100%{transform:translateY(0px);}
-    }
-
-    /* New Birthday Text Styles with Line Animations */
-    .birthday-text{
-      margin-top:25px;
-      font-size:20px;
-      line-height:1.9;
-      max-width:700px;
-      background:rgba(255,255,255,0.05);
-      padding:40px;
-      border-radius:30px;
-      backdrop-filter:blur(5px);
-    }
-
-    .line{
-      opacity:0;
-      transform:translateY(20px);
-      animation:fadeInUp 0.6s ease forwards;
-      margin-bottom:20px;
-    }
-
-    .delay1{
-      animation-delay:0.3s;
-    }
-
-    .delay2{
-      animation-delay:0.6s;
-    }
-
-    .delay3{
-      animation-delay:0.9s;
-    }
-
-    .delay4{
-      animation-delay:1.2s;
-    }
-
-    .delay5{
-      animation-delay:1.5s;
-    }
-
-    .delay6{
-      animation-delay:1.8s;
-    }
-
-    .final-line{
-      font-size:28px;
-      font-family:'Great Vibes',cursive;
-      color:#ffb6ff;
-      margin-top:20px;
-      text-shadow:0 0 10px #ff4dff;
-      animation-delay:2.1s;
-    }
-
-    @keyframes fadeInUp{
-      from{
-        opacity:0;
-        transform:translateY(20px);
-      }
-      to{
-        opacity:1;
-        transform:translateY(0);
+      h1 {
+        font-size: 1.6rem;
       }
     }
 
-    .stars{
-      position:fixed;
-      width:100%;
-      height:100%;
-      overflow:hidden;
-      top:0;
-      left:0;
-      z-index:0;
-      pointer-events:none;
+    .option-btn {
+      background: white;
+      border: 2px solid #e0d5c9;
+      padding: 0.8rem 0.6rem;
+      border-radius: 60px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #1f2a33;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      flex-wrap: wrap;
     }
 
-    .star{
-      position:absolute;
-      width:2px;
-      height:2px;
-      background:white;
-      border-radius:50%;
-      animation:twinkle 2s infinite alternate;
+    .option-btn:hover:not(.disabled-opt) {
+      background: #f4ede6;
+      border-color: #b8a48c;
+      transform: scale(0.98);
     }
 
-    @keyframes twinkle{
-      from{opacity:0.2; transform:scale(1);}
-      to{opacity:1; transform:scale(1.5);}
+    .option-btn.correct {
+      background: #d4e3d0;
+      border-color: #3f7847;
+      color: #1b4a23;
+      pointer-events: none;
     }
 
-    /* Sound Overlay - Optimized */
-    .sound-overlay{
-      position:fixed;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      background:rgba(0,0,0,0.9);
-      z-index:9999;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      flex-direction:column;
-      cursor:pointer;
-      backdrop-filter:blur(10px);
-      animation:fadeIn 0.3s ease;
-      will-change:opacity;
+    .option-btn.wrong {
+      background: #f5d8d6;
+      border-color: #b14a44;
+      color: #6d2c28;
+      pointer-events: none;
     }
 
-    .sound-overlay h2{
-      font-size:30px;
-      color:#ffb6ff;
-      margin-bottom:20px;
-      font-family:'Great Vibes',cursive;
+    .option-btn.disabled-opt {
+      opacity: 0.7;
+      pointer-events: none;
     }
 
-    .sound-overlay p{
-      font-size:18px;
-      margin-top:10px;
+    .feedback {
+      margin-top: 0.8rem;
+      font-size: 0.95rem;
+      padding: 0.6rem 1rem;
+      border-radius: 40px;
+      background: #f1eee8;
+      color: #2d3e4b;
+      min-height: 2.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
-    .sound-overlay button{
-      margin-top:30px;
-      padding:15px 40px;
-      background:linear-gradient(135deg, #ff4dff, #ff6b6b);
-      border:none;
-      border-radius:50px;
-      color:white;
-      font-size:18px;
-      font-weight:bold;
-      cursor:pointer;
-      transition:transform 0.2s ease;
-      will-change:transform;
+    .feedback .hint {
+      color: #5c6f7a;
+      font-weight: 400;
+      margin-right: 0.3rem;
     }
 
-    .sound-overlay button:hover{
-      transform:scale(1.05);
+    .reset-btn {
+      background: #e1d6ca;
+      border: none;
+      padding: 0.6rem 1.8rem;
+      border-radius: 60px;
+      font-weight: 600;
+      color: #2d3e4b;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.15s;
+      margin-top: 0.8rem;
+      border: 1px solid #cbbbad;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .sound-overlay button:active{
-      transform:scale(0.95);
+    .reset-btn:hover {
+      background: #d0c1b2;
+      transform: scale(0.97);
     }
 
-    @media(max-width:768px){
-      .title{
-        font-size:50px;
-      }
+    .progress-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 1.5rem 0 1rem;
+    }
 
-      .birthday-screen h1{
-        font-size:55px;
-      }
+    .dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 40px;
+      background: #e2d7cc;
+      border: 2px solid #d3c4b5;
+      transition: 0.1s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #2d3e4b;
+    }
 
-      .number{
-        font-size:28px;
-      }
+    .dot.answered-correct {
+      background: #5f8b6b;
+      border-color: #3f6d4a;
+      color: white;
+    }
 
-      .box{
-        min-width:80px;
-        padding:15px;
-      }
+    .dot.answered-wrong {
+      background: #bf7a74;
+      border-color: #9f5a54;
+      color: white;
+    }
 
-      .birthday-text{
-        font-size:16px;
-        padding:25px;
-      }
+    .dot.current {
+      border: 3px solid #7f6a58;
+      background: #e7dbcf;
+    }
 
-      .final-line{
-        font-size:24px;
-      }
-
-      .sound-overlay h2{
-        font-size:24px;
-        padding:20px;
-      }
+    .footer-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 0.8rem;
+      gap: 0.5rem;
     }
   </style>
 </head>
-
 <body>
+<div class="container" id="app">
+  <h1>
+    📘 Tarjuma Quran <small>HSSC-I · MCQs</small>
+  </h1>
 
-<!-- Background Video -->
-<video id="bgVideo" autoplay loop muted playsinline>
-  <source src="music.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
-<!-- Hidden Audio Element -->
-<audio id="bgAudio" loop preload="auto">
-  <source src="music.mp4" type="audio/mp4">
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
-
-<div class="stars" id="stars"></div>
-
-<div class="container">
-
-  <!-- COUNTDOWN SCREEN -->
-  <div id="countdownScreen" aria-live="polite">
-
-    <div class="title">
-    💖Midnight Holds A Secret💫
-    </div>
-
-    <div class="countdown">
-
-      <div class="box">
-        <div class="number" id="days" aria-label="Days remaining">0</div>
-        <div class="label">Days</div>
-      </div>
-
-      <div class="box">
-        <div class="number" id="hours" aria-label="Hours remaining">0</div>
-        <div class="label">Hours</div>
-      </div>
-
-      <div class="box">
-        <div class="number" id="minutes" aria-label="Minutes remaining">0</div>
-        <div class="label">Minutes</div>
-      </div>
-
-      <div class="box">
-        <div class="number" id="seconds" aria-label="Seconds remaining">0</div>
-        <div class="label">Seconds</div>
-      </div>
-
-    </div>
-
-    <div class="message">
-      And when the countdown ends,
-a beautiful story begins 🌙
-    </div>
+  <div class="stats">
+    <span>📝 <span id="totalCount">0</span> words</span>
+    <span>✅ <span id="correctCount">0</span> correct</span>
+    <span>⏳ <span id="remainingCount">0</span> remaining</span>
   </div>
 
-  <!-- BIRTHDAY SCREEN -->
-  <div id="birthdayScreen" class="birthday-screen hidden">
+  <div class="progress-container" id="progressDots"></div>
 
-    <h1>Happy Birthday Bisma 🎂</h1>
-
-    <div class="birthday-text">
-      <div class="line">✨ Tonight is special...</div>
-      <div class="line delay1">because someone truly special was born today 🎂</div>
-      <div class="line delay2">Maybe you don't realize it,</div>
-      <div class="line delay3">but your presence makes me happier 🌙</div>
-      <div class="line delay4">So here's a little surprise,</div>
-      <div class="line delay5">made just to see you smile 💖</div>
-      <div class="final-line delay6">Happy Birthday, Bisma ✨</div>
-    </div>
-
+  <div id="cardContainer">
+    <!-- card rendered by js -->
   </div>
 
+  <div class="footer-actions">
+    <button class="reset-btn" id="resetBtn">⟳ شروعِ نو</button>
+    <span style="font-size:0.85rem; color:#6f7d87;">سورہ · منتخب الفاظ</span>
+  </div>
 </div>
-
 <script>
+  (function() {
+    // ---------- raw data from document (80 words) ----------
+    const wordsData = [
+      { word: "ھُدًی", meaning: "دہایت", surah: "البقرہ" },
+      { word: "اَلْمُتَّقِیْنَ", meaning: "پرہیزگار", surah: "البقرہ" },
+      { word: "لَا تَشْتَرُوْا", meaning: "نہ خریدو", surah: "البقرہ" },
+      { word: "اَلْمُفْلِحُوْنَ", meaning: "کامیاب", surah: "البقرہ" },
+      { word: "سَوَاء", meaning: "برابر", surah: "البقرہ" },
 
-// ============================================
-// OPTIMIZED CODE - NO INP ISSUES
-// ============================================
+      { word: "غِشَاوَة", meaning: "پردہ", surah: "البقرہ" },
+      { word: "اَلنَّاسُ", meaning: "لوگ", surah: "البقرہ" },
+      { word: "اَلْمُفْسِدُوْنَ", meaning: "فساد کرنے والے", surah: "البقرہ" },
+      { word: "اَلْمُصْلِحُوْنَ", meaning: "اصلاح کرنے والے", surah: "البقرہ" },
+      { word: "اَنْذَرْتَ", meaning: "آپ نے ڈرایا", surah: "البقرہ" },
 
-const bgVideo = document.getElementById('bgVideo');
-const bgAudio = document.getElementById('bgAudio');
-let audioEnabled = false;
-let overlayRemoved = false;
+      { word: "خَاتَمَ", meaning: "اس نے مہر لگا دی", surah: "البقرہ" },
+      { word: "زَادَ", meaning: "اس نے زیادہ کیا / بڑھا دیا", surah: "البقرہ" },
+      { word: "وَاخَلَ", meaning: "وہ آگیا / داخل ہوا", surah: "البقرہ" },
+      { word: "رَبَحَت", meaning: "نفع بخش / منفعت", surah: "البقرہ" },
+      { word: "اِسْتَوْقَدَ", meaning: "اس نے روشن کیا", surah: "البقرہ" },
 
-// Optimized sound overlay with event delegation and non-blocking
-function showSoundOverlay() {
-  if(overlayRemoved) return;
-  
-  requestAnimationFrame(() => {
-    const overlay = document.createElement('div');
-    overlay.className = 'sound-overlay';
-    overlay.setAttribute('aria-label', 'Enable sound dialog');
-    overlay.innerHTML = `
-      <h2>🎵 Click anywhere to enable sound 🎵</h2>
-      <p>✨ For the complete birthday experience ✨</p>
-      <button id="enableSoundBtn">🔊 Enable Sound & Music</button>
-    `;
-    document.body.appendChild(overlay);
-    
-    const enableBtn = document.getElementById('enableSoundBtn');
-    
-    function enableSound(e) {
-      if(e) e.stopPropagation();
-      if(audioEnabled || overlayRemoved) return;
-      
-      setTimeout(() => {
-        if(!audioEnabled) {
-          bgAudio.volume = 0.5;
-          bgAudio.play().then(() => {
-            audioEnabled = true;
-            overlayRemoved = true;
-            
-            if(bgVideo) {
-              bgVideo.muted = false;
-              bgVideo.volume = 0.3;
+      { word: "اَضَاءَ", meaning: "اس نے روشنی کی", surah: "البقرہ" },
+      { word: "اَظْلَمَ", meaning: "اندھیرا ہوا", surah: "البقرہ" },
+      { word: "قَامُوا", meaning: "وہ کھڑے ہوئے", surah: "البقرہ" },
+      { word: "یُنْفِقُوْنَ", meaning: "وہ خرچ کرتے ہیں", surah: "البقرہ" },
+      { word: "یَقْنُوْنَ", meaning: "وہ جمع کرتے ہیں", surah: "البقرہ" },
+
+      { word: "یَظُنُّوْنَ", meaning: "وہ گمان کرتے ہیں", surah: "البقرہ" },
+      { word: "لَا تَقْتُلُوا", meaning: "مت قتل کرو", surah: "البقرہ" },
+      { word: "یَخْدَعُونَ", meaning: "وہ دھوکہ دیتے ہیں", surah: "البقرہ" },
+      { word: "یَشْعُرُونَ", meaning: "وہ محسوس کرتے ہیں", surah: "البقرہ" },
+      { word: "یَسْتَهْزِئُ", meaning: "وہ مذاق کرتا ہے", surah: "البقرہ" },
+
+      { word: "یَمُدُّ", meaning: "وہ بڑھاتا ہے", surah: "البقرہ" },
+      { word: "فَانصُرْنَا", meaning: "ہماری مدد کر", surah: "آل عمران" },
+      { word: "یُعْلِنُونَ", meaning: "وہ ظاہر کرتے ہیں", surah: "آل عمران" },
+      { word: "بَاقَارَة", meaning: "گائے", surah: "البقرہ" },
+      { word: "اُذْكُرُوا", meaning: "یاد کرو", surah: "البقرہ" },
+
+      { word: "اِدْعُوا", meaning: "پکارو", surah: "البقرہ" },
+      { word: "زَیْغ", meaning: "کجی / ٹیڑھ", surah: "آل عمران" },
+      { word: "مُتَشَابِهَات", meaning: "متشابہ", surah: "آل عمران" },
+      { word: "مُحْكَمَات", meaning: "محکم (پختہ)", surah: "آل عمران" },
+      { word: "اَلْفُرْقَان", meaning: "فرقان", surah: "آل عمران" },
+
+      { word: "اَلْقَیُّوم", meaning: "قائم رکھنے والا", surah: "آل عمران" },
+      { word: "اَخْتَلَفَ", meaning: "اس نے اختلاف کیا", surah: "آل عمران" },
+      { word: "شَهِدَ", meaning: "اس نے گواہی دی", surah: "آل عمران" },
+      { word: "تُولِجُ", meaning: "داخل کرتا ہے", surah: "آل عمران" },
+      { word: "اَلْقِسْط", meaning: "انصاف", surah: "آل عمران" },
+
+      { word: "اَلْخَاسِرُوْنَ", meaning: "نقصان اٹھانے والے", surah: "آل عمران" },
+      { word: "ذُرِّیَّة", meaning: "اولاد", surah: "آل عمران" },
+      { word: "تُعِزُّ", meaning: "عزت دیتا ہے", surah: "آل عمران" },
+      { word: "تُحِبُّونَ", meaning: "تم محبت کرتے ہو", surah: "آل عمران" },
+      { word: "رَءُوْف", meaning: "شفقت کرنے والا", surah: "آل عمران" },
+
+      { word: "حَابِطَات", meaning: "ضائع ہونے والی", surah: "آل عمران" },
+      { word: "لَا تَتَّخِذُوا", meaning: "مت بناؤ", surah: "آل عمران" },
+      { word: "لَا تَحْزَنُوا", meaning: "غم نہ کرو", surah: "آل عمران" },
+      { word: "حَاجَّکَ", meaning: "آپ سے جھگڑا", surah: "آل عمران" },
+      { word: "قَضَی", meaning: "فیصلہ کیا", surah: "آل عمران" },
+
+      { word: "اِصْبِرُوا", meaning: "صبر کرو", surah: "آل عمران" },
+      { word: "کُونُوا", meaning: "ہو جاؤ", surah: "آل عمران" },
+      { word: "أَوْفُوا", meaning: "پورا کرو", surah: "آل عمران" },
+      { word: "یَخْتَصُّ", meaning: "خاص کرتا ہے", surah: "آل عمران" },
+      { word: "طَائِفَة", meaning: "جماعت / گروہ", surah: "آل عمران" },
+
+      { word: "یَضِلُّونَ", meaning: "وہ گمراہ ہوتے ہیں", surah: "آل عمران" },
+      { word: "یَسْأَلُونَ", meaning: "وہ پوچھتے ہیں", surah: "آل عمران" },
+      { word: "شَاقُّوا", meaning: "انہوں نے مخالفت کی", surah: "آل عمران" },
+      { word: "وَجِلُوا", meaning: "ڈر گئے", surah: "آل عمران" },
+      { word: "کَرِهُونَ", meaning: "ناپسند کرنے والے", surah: "آل عمران" },
+
+      { word: "اَلْأَنْفَال", meaning: "انفال (مال غنیمت)", surah: "انفال" },
+      { word: "رِبَاط", meaning: "گھوڑے باندھنا", surah: "انفال" },
+      { word: "انْفِرُوا", meaning: "نکل پڑو", surah: "انفال" },
+      { word: "اسْتَجِیبُوا", meaning: "قبول کرو", surah: "انفال" },
+      { word: "یَسْقُونَ", meaning: "پانی پلاتے ہیں", surah: "انفال" },
+
+      { word: "یُنْفِقُونَ", meaning: "خرچ کرتے ہیں", surah: "انفال" },
+      { word: "نَجَّاس", meaning: "ناپاک", surah: "انفال" },
+      { word: "یَنْهَوْنَ", meaning: "منع کرتے ہیں", surah: "انفال" },
+      { word: "اَلْمُعْتَدُونَ", meaning: "حد سے تجاوز کرنے والے", surah: "انفال" },
+      { word: "عَاهَدْتُمْ", meaning: "تم نے عہد کیا", surah: "انفال" },
+
+      { word: "بَرَاءَة", meaning: "برائت / بیزاری", surah: "توبہ" },
+      { word: "جَاهِدُوا", meaning: "جہاد کرو", surah: "توبہ" },
+      { word: "یَحْلِفُونَ", meaning: "قسمیں کھاتے ہیں", surah: "توبہ" },
+      { word: "یُخْزِئ", meaning: "رسوا کرتا ہے", surah: "توبہ" },
+      { word: "نَکَثُوا", meaning: "توڑ دیا", surah: "توبہ" },
+
+      { word: "فَصَدُّوا", meaning: "انہوں نے روکا", surah: "توبہ" }
+    ];
+
+    // 80 entries as required
+    const totalWords = wordsData.length; // 80
+
+    // ----- state -----
+    let currentIndex = 0;
+    let userAnswers = new Array(totalWords).fill(null); // null or 'correct'/'wrong'
+    let selectedOptions = new Array(totalWords).fill(null); // store selected option index
+    let answeredCount = 0;
+
+    const cardContainer = document.getElementById('cardContainer');
+    const totalSpan = document.getElementById('totalCount');
+    const correctSpan = document.getElementById('correctCount');
+    const remainingSpan = document.getElementById('remainingCount');
+    const progressDots = document.getElementById('progressDots');
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // for each word, generate 3 distractors (unique meanings)
+    function getOptionsForWord(wordObj, allWords) {
+      const correctMeaning = wordObj.meaning;
+      // gather all other meanings
+      const allMeanings = allWords.map(w => w.meaning);
+      // remove duplicates and the correct one
+      const uniqueMeanings = [...new Set(allMeanings.filter(m => m !== correctMeaning))];
+      // shuffle and pick 3
+      const shuffled = shuffleArray([...uniqueMeanings]);
+      let distractors = shuffled.slice(0, 3);
+      // if less than 3 distractors (should not happen with 80 words), pad
+      while (distractors.length < 3) {
+        distractors.push('(اختیاری)');
+      }
+      // combine and shuffle
+      const options = shuffleArray([correctMeaning, ...distractors]);
+      return options;
+    }
+
+    // precompute options for each word
+    const optionsCache = wordsData.map((w, idx) => {
+      return getOptionsForWord(w, wordsData);
+    });
+
+    function renderCard(index) {
+      const word = wordsData[index];
+      const options = optionsCache[index];
+      const userAns = userAnswers[index];
+      const selectedIdx = selectedOptions[index];
+
+      let html = `<div class="card">`;
+      html += `<div class="card-header"><span class="surah-badge">${word.surah}</span></div>`;
+      html += `<div class="word-arabic">${word.word}</div>`;
+      html += `<div class="options-grid">`;
+      options.forEach((opt, optIdx) => {
+        let btnClass = 'option-btn';
+        let disabled = false;
+        if (userAns !== null) {
+          disabled = true;
+          btnClass += ' disabled-opt';
+          if (optIdx === selectedIdx) {
+            if (userAns === 'correct') btnClass += ' correct';
+            else if (userAns === 'wrong') btnClass += ' wrong';
+          } else {
+            // if this option is the correct meaning and user selected wrong, show correct
+            if (opt === word.meaning && userAns === 'wrong') {
+              btnClass += ' correct'; // highlight correct answer
             }
-            
-            overlay.style.opacity = '0';
-            setTimeout(() => {
-              if(overlay && overlay.remove) {
-                overlay.remove();
-              }
-            }, 300);
-            
-          }).catch((error) => {
-            console.log('Audio play failed:', error);
-          });
+          }
         }
-      }, 10);
-    }
-    
-    if(enableBtn) {
-      enableBtn.addEventListener('click', enableSound, { passive: false });
-    }
-    overlay.addEventListener('click', enableSound, { passive: false });
-  });
-}
-
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    if(!audioEnabled && !overlayRemoved) {
-      showSoundOverlay();
-    }
-  }, 100);
-});
-
-// ============================================
-// OPTIMIZED COUNTDOWN
-// ============================================
-
-const targetDate = new Date("2026-06-01T00:00:00+05:00").getTime();
-// FOR TESTING - Uncomment to test immediately
-// const targetDate = new Date().getTime() - 1000;
-
-const countdownScreen = document.getElementById("countdownScreen");
-const birthdayScreen = document.getElementById("birthdayScreen");
-
-let countdownInterval;
-let confettiInterval;
-let birthdayRevealed = false;
-
-const daysElement = document.getElementById("days");
-const hoursElement = document.getElementById("hours");
-const minutesElement = document.getElementById("minutes");
-const secondsElement = document.getElementById("seconds");
-
-function updateCountdown(){
-  requestAnimationFrame(() => {
-    const now = new Date().getTime();
-    const distance = targetDate - now;
-
-    if(distance <= 0 && !birthdayRevealed){
-      countdownScreen.classList.add("hidden");
-      birthdayScreen.classList.remove("hidden");
-      startFullCelebration();
-      birthdayRevealed = true;
-      
-      if(countdownInterval){
-        clearInterval(countdownInterval);
-      }
-      return;
-    }
-    
-    if(!birthdayRevealed && distance > 0){
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      
-      daysElement.innerHTML = days;
-      hoursElement.innerHTML = hours;
-      minutesElement.innerHTML = minutes;
-      secondsElement.innerHTML = seconds;
-    }
-  });
-}
-
-countdownInterval = setInterval(updateCountdown, 1000);
-updateCountdown();
-
-// ============================================
-// OPTIMIZED CONFETTI
-// ============================================
-
-function startFullCelebration() {
-  if(confettiInterval){
-    clearInterval(confettiInterval);
-  }
-  
-  const fireConfetti = () => {
-    canvasConfetti({
-      particleCount: 500,
-      spread: 180,
-      origin: { y: 0.5 },
-      startVelocity: 35,
-      colors: ['#ff4dff', '#ffb6ff', '#ff6b6b', '#ffd700', '#ff9a9e', '#ff0000', '#00ff00', '#ff00ff']
-    });
-  };
-  
-  fireConfetti();
-  
-  setTimeout(() => {
-    canvasConfetti({
-      particleCount: 300,
-      spread: 150,
-      origin: { y: 0.6, x: 0.2 },
-      startVelocity: 30
-    });
-  }, 200);
-  
-  setTimeout(() => {
-    canvasConfetti({
-      particleCount: 300,
-      spread: 150,
-      origin: { y: 0.6, x: 0.8 },
-      startVelocity: 30
-    });
-  }, 400);
-  
-  const duration = 15000;
-  const animationEnd = Date.now() + duration;
-  
-  confettiInterval = setInterval(() => {
-    if(Date.now() >= animationEnd){
-      clearInterval(confettiInterval);
-      return;
-    }
-    
-    requestAnimationFrame(() => {
-      canvasConfetti({
-        particleCount: 40,
-        spread: 100,
-        origin: {
-          x: Math.random(),
-          y: Math.random() * 0.5 + 0.3
-        },
-        startVelocity: Math.random() * 20 + 15,
-        colors: ['#ff4dff', '#ffb6ff', '#ffd700', '#ff6b6b']
+        html += `<button class="${btnClass}" data-optidx="${optIdx}" data-wordidx="${index}" ${disabled ? 'disabled' : ''}>${opt}</button>`;
       });
-    });
-  }, 150);
-}
+      html += `</div>`;
 
-// ============================================
-// STARS GENERATION
-// ============================================
-
-const starsContainer = document.getElementById("stars");
-const starCount = window.innerWidth < 768 ? 100 : 200;
-
-const fragment = document.createDocumentFragment();
-
-for(let i = 0; i < starCount; i++){
-  const star = document.createElement("div");
-  star.classList.add("star");
-  star.style.top = Math.random() * 100 + "%";
-  star.style.left = Math.random() * 100 + "%";
-  const size = Math.random() * 3 + 1;
-  star.style.width = size + "px";
-  star.style.height = size + "px";
-  star.style.animationDuration = (Math.random() * 4 + 1) + "s";
-  star.style.animationDelay = (Math.random() * 2) + "s";
-  fragment.appendChild(star);
-}
-
-starsContainer.appendChild(fragment);
-
-// ============================================
-// FLOATING HEARTS
-// ============================================
-
-let heartsInterval = null;
-
-function addFloatingHearts() {
-  if(!birthdayRevealed || heartsInterval) return;
-  
-  heartsInterval = setInterval(() => {
-    if(!birthdayRevealed) {
-      if(heartsInterval) {
-        clearInterval(heartsInterval);
-        heartsInterval = null;
+      // feedback
+      let feedbackText = '';
+      if (userAns === 'correct') {
+        feedbackText = '✅ صحیح جواب!';
+      } else if (userAns === 'wrong') {
+        feedbackText = `❌ غلط۔ صحیح: "${word.meaning}"`;
+      } else {
+        feedbackText = '⏳ ایک آپشن منتخب کریں';
       }
-      return;
+      html += `<div class="feedback"><span class="hint">${feedbackText}</span></div>`;
+      html += `</div>`;
+      cardContainer.innerHTML = html;
+
+      // attach event listeners to option buttons (if not answered)
+      if (userAns === null) {
+        document.querySelectorAll('.option-btn:not(.disabled-opt)').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            const wordIdx = parseInt(this.dataset.wordidx);
+            const optIdx = parseInt(this.dataset.optidx);
+            handleOptionClick(wordIdx, optIdx);
+          });
+        });
+      }
+
+      updateStatsAndDots();
     }
-    
-    const heart = document.createElement('div');
-    const heartsList = ['💖', '💕', '💗', '💓', '💝', '🎂', '🎈', '✨'];
-    heart.innerHTML = heartsList[Math.floor(Math.random() * heartsList.length)];
-    heart.style.position = 'fixed';
-    heart.style.left = Math.random() * 100 + '%';
-    heart.style.bottom = '-20px';
-    heart.style.fontSize = (Math.random() * 25 + 20) + 'px';
-    heart.style.opacity = Math.random() * 0.6 + 0.3;
-    heart.style.pointerEvents = 'none';
-    heart.style.zIndex = '999';
-    heart.style.animation = 'floatUp 4s ease-in forwards';
-    heart.style.willChange = 'transform';
-    document.body.appendChild(heart);
-    
-    setTimeout(() => heart.remove(), 4000);
-  }, 800);
-}
 
-const styleTag = document.createElement('style');
-styleTag.textContent = `
-  @keyframes floatUp {
-    0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
-    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-  }
-`;
-document.head.appendChild(styleTag);
+    function handleOptionClick(wordIdx, optIdx) {
+      if (userAnswers[wordIdx] !== null) return; // already answered
 
-const currentTime = new Date().getTime();
-if(currentTime >= targetDate){
-  countdownScreen.classList.add("hidden");
-  birthdayScreen.classList.remove("hidden");
-  startFullCelebration();
-  birthdayRevealed = true;
-  if(countdownInterval){
-    clearInterval(countdownInterval);
-  }
-  addFloatingHearts();
-}
+      const word = wordsData[wordIdx];
+      const options = optionsCache[wordIdx];
+      const selectedMeaning = options[optIdx];
+      const isCorrect = (selectedMeaning === word.meaning);
 
-let observerTimeout;
-const observer = new MutationObserver(function(mutations) {
-  if(observerTimeout) clearTimeout(observerTimeout);
-  observerTimeout = setTimeout(() => {
-    mutations.forEach(function(mutation) {
-      if(mutation.attributeName === 'class') {
-        if(!birthdayScreen.classList.contains('hidden') && !birthdayRevealed) {
-          addFloatingHearts();
+      userAnswers[wordIdx] = isCorrect ? 'correct' : 'wrong';
+      selectedOptions[wordIdx] = optIdx;
+      if (isCorrect) answeredCount++;
+      renderCard(wordIdx);
+      // after a delay, move to next if not last
+      setTimeout(() => {
+        if (currentIndex < totalWords - 1) {
+          currentIndex++;
+          renderCard(currentIndex);
+        } else {
+          // all done, stay
+          updateStatsAndDots();
         }
+      }, 600);
+    }
+
+    function updateStatsAndDots() {
+      const total = totalWords;
+      const correct = userAnswers.filter(a => a === 'correct').length;
+      const remaining = total - userAnswers.filter(a => a !== null).length;
+      totalSpan.textContent = total;
+      correctSpan.textContent = correct;
+      remainingSpan.textContent = remaining;
+
+      // dots
+      let dotsHtml = '';
+      for (let i = 0; i < total; i++) {
+        let cls = 'dot';
+        if (i === currentIndex) cls += ' current';
+        if (userAnswers[i] === 'correct') cls += ' answered-correct';
+        else if (userAnswers[i] === 'wrong') cls += ' answered-wrong';
+        dotsHtml += `<span class="${cls}">${i+1}</span>`;
+      }
+      progressDots.innerHTML = dotsHtml;
+    }
+
+    function resetAll() {
+      currentIndex = 0;
+      userAnswers.fill(null);
+      selectedOptions.fill(null);
+      answeredCount = 0;
+      renderCard(0);
+      updateStatsAndDots();
+    }
+
+    // initial render
+    renderCard(0);
+    updateStatsAndDots();
+
+    document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+    // keyboard navigation: left/right arrow (optional)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' && currentIndex < totalWords - 1) {
+        if (userAnswers[currentIndex] !== null) {
+          currentIndex++;
+          renderCard(currentIndex);
+        }
+      } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+        currentIndex--;
+        renderCard(currentIndex);
       }
     });
-  }, 50);
-});
-
-observer.observe(birthdayScreen, { attributes: true });
-
-window.addEventListener('beforeunload', () => {
-  if(countdownInterval) clearInterval(countdownInterval);
-  if(confettiInterval) clearInterval(confettiInterval);
-  if(heartsInterval) clearInterval(heartsInterval);
-  if(observer) observer.disconnect();
-});
-
-console.log('🎂 Happy Birthday Bisma! 🎉');
-console.log('✨ New animated birthday message added! ✨');
-
+  })();
 </script>
-
 </body>
 </html>
