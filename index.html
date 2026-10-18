@@ -1,551 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📖 Tarjuma Quran · Vocabulary MCQs</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: #f5f1eb;
-      font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
-      padding: 2rem 1rem;
-      direction: rtl;
-    }
-
-    .container {
-      max-width: 860px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 32px;
-      padding: 2rem 1.8rem;
-      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2);
-      border: 1px solid #e9dfd3;
-    }
-
-    h1 {
-      font-size: 2.1rem;
-      font-weight: 600;
-      color: #2d3e4b;
-      text-align: center;
-      letter-spacing: -0.5px;
-      border-bottom: 3px solid #d8c5b0;
-      padding-bottom: 0.6rem;
-      margin-bottom: 1.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    h1 small {
-      font-size: 1rem;
-      font-weight: 400;
-      color: #6f7d87;
-      background: #edf2f5;
-      padding: 0.2rem 1rem;
-      border-radius: 30px;
-    }
-
-    .stats {
-      display: flex;
-      justify-content: space-between;
-      background: #f8f4ef;
-      padding: 0.8rem 1.5rem;
-      border-radius: 60px;
-      margin-bottom: 2rem;
-      font-size: 0.95rem;
-      color: #2d3e4b;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .stats span {
-      background: white;
-      padding: 0.2rem 1.2rem;
-      border-radius: 40px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    }
-
-    .card {
-      background: #fcfaf8;
-      border-radius: 28px;
-      padding: 1.8rem 1.8rem 1.2rem;
-      margin-bottom: 1.8rem;
-      border: 1px solid #e4d8cc;
-      transition: all 0.1s ease;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: baseline;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-      margin-bottom: 0.8rem;
-    }
-
-    .surah-badge {
-      background: #b8a48c;
-      color: white;
-      font-size: 0.8rem;
-      padding: 0.2rem 1rem;
-      border-radius: 40px;
-      letter-spacing: 0.3px;
-      font-weight: 500;
-    }
-
-    .word-arabic {
-      font-size: 1.9rem;
-      font-weight: 600;
-      color: #1f2a33;
-      line-height: 1.4;
-      background: #f0ebe4;
-      padding: 0.2rem 1.4rem;
-      border-radius: 60px;
-      display: inline-block;
-      margin-top: 0.2rem;
-      margin-bottom: 0.8rem;
-      border: 1px solid #dad0c4;
-    }
-
-    .options-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.8rem;
-      margin-top: 0.8rem;
-    }
-
-    @media (max-width: 550px) {
-      .options-grid {
-        grid-template-columns: 1fr;
-      }
-      .container {
-        padding: 1.2rem;
-      }
-      h1 {
-        font-size: 1.6rem;
-      }
-    }
-
-    .option-btn {
-      background: white;
-      border: 2px solid #e0d5c9;
-      padding: 0.8rem 0.6rem;
-      border-radius: 60px;
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: #1f2a33;
-      cursor: pointer;
-      transition: all 0.15s;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.3rem;
-      flex-wrap: wrap;
-    }
-
-    .option-btn:hover:not(.disabled-opt) {
-      background: #f4ede6;
-      border-color: #b8a48c;
-      transform: scale(0.98);
-    }
-
-    .option-btn.correct {
-      background: #d4e3d0;
-      border-color: #3f7847;
-      color: #1b4a23;
-      pointer-events: none;
-    }
-
-    .option-btn.wrong {
-      background: #f5d8d6;
-      border-color: #b14a44;
-      color: #6d2c28;
-      pointer-events: none;
-    }
-
-    .option-btn.disabled-opt {
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    .feedback {
-      margin-top: 0.8rem;
-      font-size: 0.95rem;
-      padding: 0.6rem 1rem;
-      border-radius: 40px;
-      background: #f1eee8;
-      color: #2d3e4b;
-      min-height: 2.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .feedback .hint {
-      color: #5c6f7a;
-      font-weight: 400;
-      margin-right: 0.3rem;
-    }
-
-    .reset-btn {
-      background: #e1d6ca;
-      border: none;
-      padding: 0.6rem 1.8rem;
-      border-radius: 60px;
-      font-weight: 600;
-      color: #2d3e4b;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: 0.15s;
-      margin-top: 0.8rem;
-      border: 1px solid #cbbbad;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .reset-btn:hover {
-      background: #d0c1b2;
-      transform: scale(0.97);
-    }
-
-    .progress-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.5rem;
-      margin: 1.5rem 0 1rem;
-    }
-
-    .dot {
-      width: 32px;
-      height: 32px;
-      border-radius: 40px;
-      background: #e2d7cc;
-      border: 2px solid #d3c4b5;
-      transition: 0.1s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #2d3e4b;
-    }
-
-    .dot.answered-correct {
-      background: #5f8b6b;
-      border-color: #3f6d4a;
-      color: white;
-    }
-
-    .dot.answered-wrong {
-      background: #bf7a74;
-      border-color: #9f5a54;
-      color: white;
-    }
-
-    .dot.current {
-      border: 3px solid #7f6a58;
-      background: #e7dbcf;
-    }
-
-    .footer-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-top: 0.8rem;
-      gap: 0.5rem;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merii Jann Fiza ♡</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Great+Vibes&display=swap');
+:root{--night:#100d22;--wine:#35172e;--rose:#ff8fab;--blush:#ffc4d4;--gold:#e9c99a;--cream:#fff2e9;--muted:#c9b9cf}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--night);color:var(--cream);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(ellipse at 15% 20%,#71304c66,transparent 40%),radial-gradient(ellipse at 85% 65%,#542c6655,transparent 42%),linear-gradient(150deg,#100d22,#251329 55%,#100d22)}
+a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
+nav{position:fixed;z-index:20;top:15px;left:4%;width:92%;padding:14px 22px;border:1px solid #ffffff20;border-radius:20px;background:#171222b8;backdrop-filter:blur(18px);display:flex;justify-content:space-between;align-items:center}
+.logo{color:var(--blush);font-family:'Playfair Display',serif;font-size:18px}
+.nav-links{display:flex;gap:24px;font-size:13px;color:var(--muted)}.nav-links a:hover{color:var(--rose)}
+.nav-heart{border:1px solid #ff8fab66;color:var(--blush);background:#ff8fab12;padding:9px 15px;border-radius:30px}
+.hero{min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;padding:130px 22px 85px;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 50% 45%,#ff8fab13,transparent 55%),linear-gradient(transparent 65%,var(--night))}
+.stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:-1}
+.star{position:absolute;width:3px;height:3px;background:white;border-radius:50%;box-shadow:0 0 9px #ffcee3;animation:twinkle 3s infinite alternate}
+@keyframes twinkle{from{opacity:.2;transform:scale(.7)}to{opacity:1;transform:scale(1.5)}}
+.eyebrow{text-transform:uppercase;letter-spacing:5px;color:var(--gold);font-size:10px;margin-bottom:22px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(43px,8.5vw,91px);font-weight:500;line-height:1.2;letter-spacing:-2px}
+.script{display:block;color:var(--rose);font-family:'Great Vibes',cursive;font-size:clamp(65px,11vw,112px);font-weight:400;margin-top:-5px;text-shadow:0 0 45px #ff8fab40}
+.hero-sub{margin-top:22px;color:var(--muted);font-size:14px;line-height:2;max-width:450px;margin-inline:auto}.hero-sub strong{color:var(--blush);font-weight:500}
+.hero-actions{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+.btn{padding:14px 23px;border-radius:30px;border:1px solid #ff8fab66;color:var(--cream);background:#ffffff08;transition:.3s}
+.btn.primary{color:#35172e;border:none;background:linear-gradient(120deg,#ff8fab,#ffe0d2);box-shadow:0 0 30px #ff8fab20}
+.btn:hover{transform:translateY(-3px);box-shadow:0 8px 30px #ff8fab22}
+.scroll-hint{position:absolute;bottom:27px;color:#b7a4bc;font-size:10px;letter-spacing:3px}
+section{padding:95px 7%;scroll-margin-top:80px}
+.section-tag{text-align:center;color:var(--gold);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:13px}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(31px,5vw,49px);text-align:center;font-weight:500;margin-bottom:16px}
+.section-desc{color:var(--muted);text-align:center;max-width:480px;margin:0 auto 42px;font-size:13px;line-height:1.9}
+.reasons{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;max-width:1120px;margin:auto}
+.reason{padding:26px 21px;border:1px solid #ffffff15;border-radius:20px;background:linear-gradient(145deg,#ffffff0b,#ffffff03);transition:.35s}
+.reason:hover{transform:translateY(-6px);border-color:#ff8fab60;background:#ff8fab0b}
+.reason-icon{font-size:27px;margin-bottom:19px}.reason h3{font-family:'Playfair Display',serif;font-size:19px;font-weight:500;margin-bottom:10px;color:var(--blush)}
+.reason p{color:var(--muted);font-size:12px;line-height:1.9}
+.memory{max-width:720px;margin:auto;text-align:center;padding:42px 30px;border:1px solid #e9c99a35;border-radius:26px;background:radial-gradient(ellipse at top,#71304c35,transparent 70%),#ffffff05}
+.memory .moon{font-size:43px;margin-bottom:18px}.memory blockquote{font-family:'Playfair Display',serif;font-size:clamp(21px,4vw,32px);line-height:1.7;color:var(--cream)}.memory blockquote em{color:var(--rose)}
+.memory p{margin-top:18px;color:var(--muted);font-size:12px}.letter-section{padding-top:65px}
+.letter{max-width:660px;margin:auto;padding:38px;position:relative;overflow:hidden;border:1px solid #ff8fab30;border-radius:24px;background:linear-gradient(140deg,#35172e99,#171222);text-align:center}
+.letter::after{content:"♡";position:absolute;right:-10px;bottom:-75px;font-size:190px;color:#ff8fab08;pointer-events:none}
+.letter h3{font-family:'Playfair Display',serif;font-size:27px;color:var(--blush);font-weight:500;margin-bottom:22px}
+.letter p{position:relative;z-index:1;font-size:13px;line-height:2.1;color:#e1d3e1;margin-bottom:13px}
+.letter .signature{color:var(--rose);font-family:'Great Vibes',cursive;font-size:40px;margin-top:18px}
+.surprise{max-width:650px;margin:auto;padding:35px 20px;text-align:center;border-radius:25px;background:#ffffff04}
+.gift{font-size:57px;display:block;margin:20px auto;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+#surpriseText{display:none;max-width:480px;margin:24px auto 0;color:var(--blush);font-family:'Playfair Display',serif;font-size:23px;line-height:1.9;animation:reveal .8s ease}
+@keyframes reveal{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+footer{text-align:center;padding:50px 20px 35px;border-top:1px solid #ffffff10}
+footer .final-heart{font-size:27px}footer h2{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(22px,4vw,35px);margin:18px 0;color:var(--blush)}
+footer p{color:var(--muted);font-size:11px;line-height:2}
+.petal{position:fixed;top:-30px;z-index:10;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(600deg);opacity:0}}
+@media(max-width:850px){.reasons{grid-template-columns:repeat(2,1fr)}.nav-links{gap:12px}}
+@media(max-width:520px){nav{left:3%;width:94%;padding:12px}.logo{font-size:15px}.nav-links{display:none}.nav-heart{padding:8px 12px;font-size:12px}.hero{min-height:92svh;padding-top:115px}.hero h1{letter-spacing:-1px}.hero-sub{font-size:13px}section{padding:75px 6%}.reasons{gap:10px}.reason{padding:20px 15px}.reason h3{font-size:17px}.letter{padding:28px 20px}}
+</style>
 </head>
 <body>
-<div class="container" id="app">
-  <h1>
-    📘 Tarjuma Quran <small>HSSC-I · MCQs</small>
-  </h1>
-
-  <div class="stats">
-    <span>📝 <span id="totalCount">0</span> words</span>
-    <span>✅ <span id="correctCount">0</span> correct</span>
-    <span>⏳ <span id="remainingCount">0</span> remaining</span>
+<nav>
+  <a class="logo" href="#home">♡ My Fiza</a>
+  <div class="nav-links"><a href="#home">Home</a><a href="#reasons">Reasons</a><a href="#memories">Feelings</a><a href="#letter">My Letter</a></div>
+  <a class="nav-heart" href="#surprise">You & Me ♡</a>
+</nav>
+<header class="hero" id="home">
+  <div class="stars" id="stars"></div>
+  <div>
+    <p class="eyebrow">A little universe made for you</p>
+    <h1>Merii Jann</h1>
+    <span class="script">Fiza ♡</span>
+    <p class="hero-sub">In a world full of people,<br><strong>my heart has its own favourite person.</strong><br>And that person is you, merii jann. 🌙</p>
+    <div class="hero-actions"><a class="btn primary" href="#letter">♡ Read My Letter</a><a class="btn" href="#reasons">Discover My Feelings ↗</a></div>
   </div>
-
-  <div class="progress-container" id="progressDots"></div>
-
-  <div id="cardContainer">
-    <!-- card rendered by js -->
+  <div class="scroll-hint">SCROLL A LITTLE · THERE'S MORE ♡</div>
+</header>
+<section id="reasons">
+  <p class="section-tag">A few little things</p><h2 class="section-title">Why You're So Special ♡</h2>
+  <p class="section-desc">Some feelings are too beautiful to fit into words. But let me try, just for you.</p>
+  <div class="reasons">
+    <article class="reason"><div class="reason-icon">♡</div><h3>My Happiness</h3><p>Tumhari smile aur tumhari baatein mere din ko khoobsurat bana deti hain.</p></article>
+    <article class="reason"><div class="reason-icon">✧</div><h3>My Motivation</h3><p>Tumhari khushi mujhe apna best version banne ki yaad dilati hai.</p></article>
+    <article class="reason"><div class="reason-icon">☾</div><h3>My Peace</h3><p>Tumse baat karke dil ko ek alag hi sukoon milta hai.</p></article>
+    <article class="reason"><div class="reason-icon">∞</div><h3>My Favourite</h3><p>Har khoobsurat kahani mein mera favourite hissa tum ho.</p></article>
   </div>
-
-  <div class="footer-actions">
-    <button class="reset-btn" id="resetBtn">⟳ شروعِ نو</button>
-    <span style="font-size:0.85rem; color:#6f7d87;">سورہ · منتخب الفاظ</span>
+</section>
+<section id="memories">
+  <p class="section-tag">A feeling from my heart</p><h2 class="section-title">If I Could Tell You One Thing...</h2>
+  <p class="section-desc">I'd tell you this, again and again.</p>
+  <div class="memory"><div class="moon">☾ ✦</div><blockquote>"Duniya kitni bhi badi kyun na ho,<br>mere dil ki favourite jagah<br><em>tumhare naam se judi hai.</em>"</blockquote><p>— Just a little truth from my heart ♡</p></div>
+</section>
+<section class="letter-section" id="letter">
+  <p class="section-tag">Written with love</p><h2 class="section-title">A Letter For My Jann 💌</h2>
+  <p class="section-desc">No fancy words. Just what I want you to know.</p>
+  <div class="letter">
+    <h3>Merii Jann Fiza, ♡</h3>
+    <p>Pata hai, main shayad har baar apni feelings perfect words mein explain na kar sakun. Lekin iska matlab yeh bilkul nahi ke tum mere liye special nahi ho.</p>
+    <p>Tumhari choti choti baatein, tumhari smile, aur tumhara apna sa ehsaas — in sab mein kuch aisa hai jo mere dil ko bohat pyara lagta hai.</p>
+    <p>Main chahta hoon ke tum hamesha khush raho, apne dreams poore karo, aur kabhi apni value na bhoolo. Tum respect, care aur sachchi mohabbat deserve karti ho.</p>
+    <p>Main yeh nahi keh raha ke har din perfect hoga. Bas itna kehna hai ke meri feelings tumhare liye dil se hain, aur main chahta hoon ke meri care tumhein mere words se zyada mere actions mein nazar aaye.</p>
+    <p><strong style="color:#ffb6ca">I LOVE YOUU SOO MUCHH, MERII JANN FIZA. ❤️</strong></p>
+    <div class="signature">Always with love ♡</div>
   </div>
-</div>
+</section>
+<section id="surprise">
+  <p class="section-tag">One last little surprise</p><h2 class="section-title">Something Just For You 🎁</h2>
+  <div class="surprise"><p class="section-desc" style="margin-bottom:0">There's one more thing hidden in this little universe.</p><span class="gift">🎁</span>
+  <button class="btn primary" id="giftButton" onclick="openGift()">Open Your Surprise ♡</button>
+  <div id="surpriseText">Merii Jann Fiza! 🥹💕<br><br>If I could give you one thing in life, I'd give you the ability to see yourself through my eyes.<br><br>Then you'd understand just how special you are to me. 🌙<br><br><span style="font-family:'Great Vibes',cursive;font-size:39px">I love you, meri jaan. ♡</span></div>
+  </div>
+</section>
+<footer><div class="final-heart">♡</div><h2>Thank You For Being In My Life</h2><p>Made with a little creativity and a whole lot of love.<br>I LOVE YOUU SOO MUCHH, MERII JANN FIZA ♡</p><p style="margin-top:20px;color:#e9c99a">ALWAYS YOU · FOREVER YOU · ONLY YOU</p></footer>
 <script>
-  (function() {
-    // ---------- Complete 80 words from PDF (exactly as per document) ----------
-    const wordsData = [
-      // Page 1 - Surah Al-Baqarah (1-30)
-      { word: "ھُدًی", meaning: "دہایت", surah: "البقرہ" },
-      { word: "اَلْمُتَّقِیْنَ", meaning: "پرہیزگار", surah: "البقرہ" },
-      { word: "لَا تَشْتَرُوْا", meaning: "نہ خریدو", surah: "البقرہ" },
-      { word: "اَلْمُفْلِحُوْنَ", meaning: "کامیاب", surah: "البقرہ" },
-      { word: "سَوَاء", meaning: "برابر", surah: "البقرہ" },
-      { word: "غِشَاوَة", meaning: "پردہ", surah: "البقرہ" },
-      { word: "اَلنَّاسُ", meaning: "لوگ", surah: "البقرہ" },
-      { word: "اَلْمُفْسِدُوْنَ", meaning: "فساد کرنے والے", surah: "البقرہ" },
-      { word: "اَلْمُصْلِحُوْنَ", meaning: "اصلاح کرنے والے", surah: "البقرہ" },
-      { word: "اَنْذَرْتَ", meaning: "آپ نے ڈرایا", surah: "البقرہ" },
-      { word: "خَاتَمَ", meaning: "اس نے مہر لگا دی", surah: "البقرہ" },
-      { word: "زَادَ", meaning: "اس نے زیادہ کیا", surah: "البقرہ" },
-      { word: "وَاخَلَ", meaning: "وہ آگیا / داخل ہوا", surah: "البقرہ" },
-      { word: "رَبَحَت", meaning: "نفع بخش", surah: "البقرہ" },
-      { word: "اِسْتَوْقَدَ", meaning: "اس نے روشن کیا", surah: "البقرہ" },
-      { word: "اَضَاءَ", meaning: "اس نے روشنی کی", surah: "البقرہ" },
-      { word: "اَظْلَمَ", meaning: "اندھیرا ہوا", surah: "البقرہ" },
-      { word: "قَامُوا", meaning: "وہ کھڑے ہوئے", surah: "البقرہ" },
-      { word: "یُنْفِقُوْنَ", meaning: "وہ خرچ کرتے ہیں", surah: "البقرہ" },
-      { word: "یَقْنُوْنَ", meaning: "وہ جمع کرتے ہیں", surah: "البقرہ" },
-      { word: "یَظُنُّوْنَ", meaning: "وہ گمان کرتے ہیں", surah: "البقرہ" },
-      { word: "لَا تَقْتُلُوا", meaning: "مت قتل کرو", surah: "البقرہ" },
-      { word: "یَخْدَعُونَ", meaning: "وہ دھوکہ دیتے ہیں", surah: "البقرہ" },
-      { word: "یَشْعُرُونَ", meaning: "وہ محسوس کرتے ہیں", surah: "البقرہ" },
-      { word: "یَسْتَهْزِئُ", meaning: "وہ مذاق کرتا ہے", surah: "البقرہ" },
-      { word: "یَمُدُّ", meaning: "وہ بڑھاتا ہے", surah: "البقرہ" },
-      { word: "بَاقَارَة", meaning: "گائے", surah: "البقرہ" },
-      { word: "اُذْكُرُوا", meaning: "یاد کرو", surah: "البقرہ" },
-      { word: "اِدْعُوا", meaning: "پکارو", surah: "البقرہ" },
-      { word: "یُفْسِقُونَ", meaning: "وہ فسق کرتے ہیں", surah: "البقرہ" }, // یافسُقُونا
-
-      // Page 1 - Surah Al-Imran (31-65)
-      { word: "فَانصُرْنَا", meaning: "ہماری مدد کر", surah: "آل عمران" },
-      { word: "یُعْلِنُونَ", meaning: "وہ ظاہر کرتے ہیں", surah: "آل عمران" },
-      { word: "زَیْغ", meaning: "کجی / ٹیڑھ", surah: "آل عمران" },
-      { word: "مُتَشَابِهَات", meaning: "متشابہ", surah: "آل عمران" },
-      { word: "مُحْكَمَات", meaning: "محکم", surah: "آل عمران" },
-      { word: "اَلْفُرْقَان", meaning: "فرقان", surah: "آل عمران" },
-      { word: "اَلْقَیُّوم", meaning: "قائم رکھنے والا", surah: "آل عمران" },
-      { word: "اَخْتَلَفَ", meaning: "اس نے اختلاف کیا", surah: "آل عمران" },
-      { word: "شَهِدَ", meaning: "اس نے گواہی دی", surah: "آل عمران" },
-      { word: "تُولِجُ", meaning: "داخل کرتا ہے", surah: "آل عمران" },
-      { word: "اَلْقِسْط", meaning: "انصاف", surah: "آل عمران" },
-      { word: "اَلْخَاسِرُوْنَ", meaning: "نقصان اٹھانے والے", surah: "آل عمران" },
-      { word: "ذُرِّیَّة", meaning: "اولاد", surah: "آل عمران" },
-      { word: "تُعِزُّ", meaning: "عزت دیتا ہے", surah: "آل عمران" },
-      { word: "تُحِبُّونَ", meaning: "تم محبت کرتے ہو", surah: "آل عمران" },
-      { word: "رَءُوْف", meaning: "شفقت کرنے والا", surah: "آل عمران" },
-      { word: "حَابِطَات", meaning: "ضائع ہونے والی", surah: "آل عمران" },
-      { word: "لَا تَتَّخِذُوا", meaning: "مت بناؤ", surah: "آل عمران" },
-      { word: "لَا تَحْزَنُوا", meaning: "غم نہ کرو", surah: "آل عمران" },
-      { word: "حَاجَّکَ", meaning: "آپ سے جھگڑا", surah: "آل عمران" },
-      { word: "قَضَی", meaning: "فیصلہ کیا", surah: "آل عمران" },
-      { word: "اِصْبِرُوا", meaning: "صبر کرو", surah: "آل عمران" },
-      { word: "کُونُوا", meaning: "ہو جاؤ", surah: "آل عمران" },
-      { word: "أَوْفُوا", meaning: "پورا کرو", surah: "آل عمران" },
-      { word: "یَخْتَصُّ", meaning: "خاص کرتا ہے", surah: "آل عمران" },
-      { word: "طَائِفَة", meaning: "جماعت / گروہ", surah: "آل عمران" },
-      { word: "یَضِلُّونَ", meaning: "وہ گمراہ ہوتے ہیں", surah: "آل عمران" },
-      { word: "یَسْأَلُونَ", meaning: "وہ پوچھتے ہیں", surah: "آل عمران" },
-      { word: "شَاقُّوا", meaning: "انہوں نے مخالفت کی", surah: "آل عمران" },
-      { word: "وَجِلُوا", meaning: "ڈر گئے", surah: "آل عمران" },
-      { word: "کَرِهُونَ", meaning: "ناپسند کرنے والے", surah: "آل عمران" },
-      { word: "اِعْبُدُوا", meaning: "عبادت کرو", surah: "آل عمران" }, // added
-      { word: "آمَنُوا", meaning: "ایمان لائے", surah: "آل عمران" }, // added
-      { word: "نَار", meaning: "آگ", surah: "آل عمران" }, // added
-
-      // Page 2 - Surah Al-Anfal (66-75)
-      { word: "اَلْأَنْفَال", meaning: "انفال", surah: "انفال" },
-      { word: "رِبَاط", meaning: "گھوڑے باندھنا", surah: "انفال" },
-      { word: "انْفِرُوا", meaning: "نکل پڑو", surah: "انفال" },
-      { word: "اسْتَجِیبُوا", meaning: "قبول کرو", surah: "انفال" },
-      { word: "یَسْقُونَ", meaning: "پانی پلاتے ہیں", surah: "انفال" },
-      { word: "نَجَّاس", meaning: "ناپاک", surah: "انفال" },
-      { word: "یَنْهَوْنَ", meaning: "منع کرتے ہیں", surah: "انفال" },
-      { word: "اَلْمُعْتَدُونَ", meaning: "حد سے تجاوز کرنے والے", surah: "انفال" },
-      { word: "عَاهَدْتُمْ", meaning: "تم نے عہد کیا", surah: "انفال" },
-
-      // Page 2 - Surah At-Tawbah (76-80)
-      { word: "بَرَاءَة", meaning: "برائت / بیزاری", surah: "توبہ" },
-      { word: "جَاهِدُوا", meaning: "جہاد کرو", surah: "توبہ" },
-      { word: "یَحْلِفُونَ", meaning: "قسمیں کھاتے ہیں", surah: "توبہ" },
-      { word: "یُخْزِئ", meaning: "رسوا کرتا ہے", surah: "توبہ" },
-      { word: "نَکَثُوا", meaning: "توڑ دیا", surah: "توبہ" },
-      { word: "فَصَدُّوا", meaning: "انہوں نے روکا", surah: "توبہ" }
-    ];
-
-    // Verify total count
-    console.log('Total words:', wordsData.length); // Should be 80
-
-    const totalWords = wordsData.length;
-    let currentIndex = 0;
-    let userAnswers = new Array(totalWords).fill(null);
-    let selectedOptions = new Array(totalWords).fill(null);
-    let answeredCount = 0;
-
-    const cardContainer = document.getElementById('cardContainer');
-    const totalSpan = document.getElementById('totalCount');
-    const correctSpan = document.getElementById('correctCount');
-    const remainingSpan = document.getElementById('remainingCount');
-    const progressDots = document.getElementById('progressDots');
-
-    function shuffleArray(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
-    function getOptionsForWord(wordObj, allWords) {
-      const correctMeaning = wordObj.meaning;
-      const allMeanings = allWords.map(w => w.meaning);
-      const uniqueMeanings = [...new Set(allMeanings.filter(m => m !== correctMeaning))];
-      const shuffled = shuffleArray([...uniqueMeanings]);
-      let distractors = shuffled.slice(0, 3);
-      while (distractors.length < 3) {
-        distractors.push('(اختیاری)');
-      }
-      const options = shuffleArray([correctMeaning, ...distractors]);
-      return options;
-    }
-
-    const optionsCache = wordsData.map((w, idx) => {
-      return getOptionsForWord(w, wordsData);
-    });
-
-    function renderCard(index) {
-      const word = wordsData[index];
-      const options = optionsCache[index];
-      const userAns = userAnswers[index];
-      const selectedIdx = selectedOptions[index];
-
-      let html = `<div class="card">`;
-      html += `<div class="card-header"><span class="surah-badge">${word.surah}</span></div>`;
-      html += `<div class="word-arabic">${word.word}</div>`;
-      html += `<div class="options-grid">`;
-      options.forEach((opt, optIdx) => {
-        let btnClass = 'option-btn';
-        let disabled = false;
-        if (userAns !== null) {
-          disabled = true;
-          btnClass += ' disabled-opt';
-          if (optIdx === selectedIdx) {
-            if (userAns === 'correct') btnClass += ' correct';
-            else if (userAns === 'wrong') btnClass += ' wrong';
-          } else {
-            if (opt === word.meaning && userAns === 'wrong') {
-              btnClass += ' correct';
-            }
-          }
-        }
-        html += `<button class="${btnClass}" data-optidx="${optIdx}" data-wordidx="${index}" ${disabled ? 'disabled' : ''}>${opt}</button>`;
-      });
-      html += `</div>`;
-
-      let feedbackText = '';
-      if (userAns === 'correct') {
-        feedbackText = '✅ صحیح جواب!';
-      } else if (userAns === 'wrong') {
-        feedbackText = `❌ غلط۔ صحیح: "${word.meaning}"`;
-      } else {
-        feedbackText = '⏳ ایک آپشن منتخب کریں';
-      }
-      html += `<div class="feedback"><span class="hint">${feedbackText}</span></div>`;
-      html += `</div>`;
-      cardContainer.innerHTML = html;
-
-      if (userAns === null) {
-        document.querySelectorAll('.option-btn:not(.disabled-opt)').forEach(btn => {
-          btn.addEventListener('click', function(e) {
-            const wordIdx = parseInt(this.dataset.wordidx);
-            const optIdx = parseInt(this.dataset.optidx);
-            handleOptionClick(wordIdx, optIdx);
-          });
-        });
-      }
-
-      updateStatsAndDots();
-    }
-
-    function handleOptionClick(wordIdx, optIdx) {
-      if (userAnswers[wordIdx] !== null) return;
-
-      const word = wordsData[wordIdx];
-      const options = optionsCache[wordIdx];
-      const selectedMeaning = options[optIdx];
-      const isCorrect = (selectedMeaning === word.meaning);
-
-      userAnswers[wordIdx] = isCorrect ? 'correct' : 'wrong';
-      selectedOptions[wordIdx] = optIdx;
-      if (isCorrect) answeredCount++;
-      renderCard(wordIdx);
-      
-      setTimeout(() => {
-        if (currentIndex < totalWords - 1) {
-          currentIndex++;
-          renderCard(currentIndex);
-        } else {
-          updateStatsAndDots();
-        }
-      }, 600);
-    }
-
-    function updateStatsAndDots() {
-      const total = totalWords;
-      const correct = userAnswers.filter(a => a === 'correct').length;
-      const remaining = total - userAnswers.filter(a => a !== null).length;
-      totalSpan.textContent = total;
-      correctSpan.textContent = correct;
-      remainingSpan.textContent = remaining;
-
-      let dotsHtml = '';
-      for (let i = 0; i < total; i++) {
-        let cls = 'dot';
-        if (i === currentIndex) cls += ' current';
-        if (userAnswers[i] === 'correct') cls += ' answered-correct';
-        else if (userAnswers[i] === 'wrong') cls += ' answered-wrong';
-        dotsHtml += `<span class="${cls}">${i+1}</span>`;
-      }
-      progressDots.innerHTML = dotsHtml;
-    }
-
-    function resetAll() {
-      currentIndex = 0;
-      userAnswers.fill(null);
-      selectedOptions.fill(null);
-      answeredCount = 0;
-      renderCard(0);
-      updateStatsAndDots();
-    }
-
-    renderCard(0);
-    updateStatsAndDots();
-
-    document.getElementById('resetBtn').addEventListener('click', resetAll);
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' && currentIndex < totalWords - 1) {
-        if (userAnswers[currentIndex] !== null) {
-          currentIndex++;
-          renderCard(currentIndex);
-        }
-      } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
-        currentIndex--;
-        renderCard(currentIndex);
-      }
-    });
-  })();
+const stars=document.getElementById('stars');
+for(let i=0;i<100;i++){const star=document.createElement('span');star.className='star';star.style.left=Math.random()*100+'%';star.style.top=Math.random()*100+'%';star.style.animationDelay=Math.random()*4+'s';star.style.animationDuration=(2+Math.random()*4)+'s';stars.appendChild(star)}
+function openGift(){const text=document.getElementById('surpriseText');const button=document.getElementById('giftButton');const isOpen=text.style.display==='block';text.style.display=isOpen?'none':'block';button.textContent=isOpen?'Open Your Surprise ♡':'Close Surprise ♡';if(!isOpen){for(let i=0;i<32;i++)setTimeout(createPetal,i*65)}}
+function createPetal(){const petal=document.createElement('span');petal.className='petal';petal.textContent=['♡','♥','✿','💕'][Math.floor(Math.random()*4)];petal.style.left=Math.random()*100+'vw';petal.style.fontSize=(12+Math.random()*20)+'px';petal.style.color=['#ff8fab','#ffc4d4','#e9c99a'][Math.floor(Math.random()*3)];petal.style.opacity=.8;petal.style.animationDuration=(3+Math.random()*4)+'s';document.body.appendChild(petal);setTimeout(()=>petal.remove(),7500)}
 </script>
 </body>
 </html>
