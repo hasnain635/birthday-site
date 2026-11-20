@@ -59,64 +59,63 @@ footer{padding:30px 22px 50px;text-align:center;font-size:13px;letter-spacing:.2
 <h1>SORRY</h1>
 <div class="script">Meri Jaan Fiza</div>
 <div class="line"><i></i><svg width="20" height="18" viewBox="0 0 20 18" fill="none" stroke-width="1.6" style="stroke:var(--accent)" aria-hidden="true"><path d="M10 16 C2 10 1 5 4 3 C7 1 10 4 10 5 C10 4 13 1 16 3 C19 5 18 10 10 16 Z"/></svg><i></i></div>
-<div class="sub">I LOVE YOU SOO MUCH</div>
+<div class="sub">I LOVE YOUUU SOO MUCHHH<br>MERI JAANN</div>
 <a class="down" href="#baat">NEECHAY PADHO &#8595;</a>
 </section>
 
 <section id="baat">
 <h2>Meri Dil Ki Baat</h2>
 <div class="card">
-<p>Fiza, mujhe pata hai ke meri wajah se tumhara dil dukha. Mujhe is baat ka bohat afsos hai, aur main sach mein sharminda hoon.</p>
-<p>Tum meri zindagi ka sab se khoobsurat hissa ho. Meri ana ya meri ghalti tumhari muskurahat se bari nahi ho sakti.</p>
-<p>Main bahana nahi bana raha. Bas itna kehna chahta hoon ke tum meri sab se qeemti insaan ho, aur main tumhein khone ka sochna bhi nahi chahta.</p>
+<p>Fiza, mujhe pata hai ke meri wajah se aapka dil dukha. Mujhe is baat ka bohat afsos hai, aur main sach mein sharminda hoon.</p>
+<p>Aap meri zindagi ka sab se khoobsurat hissa hain. Meri ana ya meri ghalti aapki muskurahat se bari nahi ho sakti.</p>
+<p>Main bahana nahi bana raha. Bas itna kehna chahta hoon ke aap meri sab se qeemti insaan hain, aur main aapko khone ka sochna bhi nahi chahta.</p>
 </div>
 </section>
 
 <section>
 <h2>Meri Wada</h2>
 <ul>
-<li>Main tumhari baat dhyan se sunoon ga, aur beech mein nahi tokoon ga.</li>
+<li>Main aapki baat dhyan se sunoon ga, aur beech mein nahi tokoon ga.</li>
 <li>Jo ghalti hui, us se seekhoon ga, aur dobara nahi dohraoon ga.</li>
-<li>Tumhein hamesha izzat aur pyaar doon ga, gusse mein bhi.</li>
-<li>Har haal mein tumhara saath nibhaoon ga.</li>
+<li>Aapko hamesha izzat aur pyaar doon ga, gusse mein bhi.</li>
+<li>Har haal mein aapka saath nibhaoon ga.</li>
 </ul>
 </section>
 
 <section>
-<h2>Kya Tum Mujhe Maaf Karogi?</h2>
-<p>Ek baar bas ek chhota sa mauqa de do, meri jaan.</p>
+<h2>Kya Aap Mujhe Maaf Karengi?</h2>
+<p>Ek baar bas ek chhota sa mauqa de dein, meri jaan.</p>
+<p id="msgbox" aria-live="polite" style="min-height:3.4em;margin:6px 0 0;color:var(--accent);font-weight:500"></p>
 <div class="btns" id="area">
-<button id="yes">Haan, maaf kiya</button>
+<button id="yes">Haan, maaf kar diya</button>
 <button id="no">Nahi</button>
 </div>
 <div id="thanks" class="card" style="text-align:center">
 <div class="script">Shukriya Meri Jaan</div>
-<p>Tumne mera din bana diya. Main wada karta hoon, tumhein kabhi pachtawa nahi hone doon ga. I love you soo much MERII JANN.</p>
+<p>Aapne mera din bana diya. Main wada karta hoon, aapko kabhi pachtawa nahi hone doon ga.</p><p style="color:var(--accent);font-weight:500">I love youuu soo muchhh meri jaann</p>
 </div>
 </section>
 
 <footer>
-<div class="sign">Tumhara Hasnain</div>
-<div style="margin-top:10px">MADE WITH LOVE</div>
+<div class="sign">Tumhara Pyara Hasnain</div>
+<div style="margin-top:10px">I LOVE YOUU VERY MUCHH</div>
 </footer>
 
 <script>
 (function(){
-var no=document.getElementById('no'),yes=document.getElementById('yes'),area=document.getElementById('area'),thanks=document.getElementById('thanks');
-var tries=0,msgs=['Nahi','Pakka?','Please na','Ek aur mauqa','Dil toot jaye ga','Bas karo na'];
+var no=document.getElementById('no'),yes=document.getElementById('yes'),area=document.getElementById('area'),thanks=document.getElementById('thanks'),msgbox=document.getElementById('msgbox');
+var tries=0,msgs=['Please na, aisa mat kahein','Sorry kar diya na, ab maaf kar dein','Main kaan pakar kar sorry bol raha hoon','Aapka Hasnain bohat udaas ho jaye ga','Ek chhota sa mauqa to de dein','Maine dil se sorry kaha hai, sach mein','Please, please, please maaf kar dein','Aap meri jaan hain, naraz mat rahein','Main aaj ke baad aisa kabhi nahi karoon ga','Dekhein, mera dil toot raha hai','Aapki muskurahat ke bina sab adhoora hai','Chalo na, ab bas kar dein gussa','Main aapko chocolate bhi dila doon ga','Sorry sorry sorry meri jaan','Aap ke bina mera din nahi guzarta','Itni badi saza mat dein mujhe','Main aapko hamesha khush rakhoon ga','Bas ek baar haan bol dein','Aapka naraz chehra mujhe bilkul acha nahi lagta','Main aapse bohat bohat pyaar karta hoon','I love youuu soo muchhh meri jaann','Haan wala button dekhein, kitna pyara hai','Aap maan jayein to main khushi se naach doon ga','Last time, please maaf kar dein meri jaan'];
 function dodge(e){
 if(e&&e.preventDefault)e.preventDefault();
-tries++;no.textContent=msgs[Math.min(tries,msgs.length-1)];
+msgbox.textContent=msgs[tries%msgs.length];tries++;
 var w=area.clientWidth-no.offsetWidth,h=90;
 var x=Math.random()*w-no.offsetLeft,y=(Math.random()*h)-no.offsetTop+10;
 no.style.transform='translate('+x+'px,'+y+'px)';
 yes.style.transform='scale('+Math.min(1+tries*0.08,1.5)+')';
 }
-no.addEventListener('pointerenter',dodge);
-no.addEventListener('touchstart',dodge,{passive:false});
 no.addEventListener('click',dodge);
 yes.addEventListener('click',function(){
-area.style.display='none';thanks.classList.add('on');
+area.style.display='none';msgbox.style.display='none';thanks.classList.add('on');
 for(var i=0;i<40;i++){(function(i){setTimeout(function(){
 var d=document.createElement('span');d.className='h';d.textContent='\u2665';
 d.style.left=Math.random()*100+'vw';d.style.fontSize=(14+Math.random()*26)+'px';
