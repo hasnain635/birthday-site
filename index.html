@@ -29,11 +29,11 @@ h2{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,6vw,38px);margin:
 ul{list-style:none;padding:0;margin:0;display:grid;gap:12px;text-align:left}
 li{background:var(--card);border:1px solid var(--soft);border-radius:16px;padding:16px 18px 16px 52px;position:relative}
 li:before{content:"\2665";position:absolute;left:18px;top:14px;color:var(--accent);font-size:20px}
-.btns{position:relative;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;min-height:120px;align-items:flex-start;margin-top:10px}
-button{font:500 16px 'Montserrat',sans-serif;border-radius:999px;padding:15px 30px;min-height:48px;cursor:pointer;border:2px solid var(--accent);transition:transform .25s ease}
+.btns{position:relative;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;min-height:200px;align-items:flex-start;margin-top:10px}
+button{-webkit-user-select:none;user-select:none;font:500 16px 'Montserrat',sans-serif;border-radius:999px;padding:15px 30px;min-height:48px;cursor:pointer;border:2px solid var(--accent);transition:transform .25s ease}
 #yes{background:var(--accent);color:var(--bg)}
 #yes:hover{transform:scale(1.06)}
-#no{background:transparent;color:var(--accent);position:relative}
+#no{background:transparent;color:var(--accent);position:relative;z-index:2}
 #thanks{display:none}
 #thanks.on{display:block;animation:pop .6s ease}
 @keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
@@ -108,10 +108,18 @@ var tries=0,msgs=['Please na, aisa mat kahein','Sorry kar diya na, ab maaf kar d
 function dodge(e){
 if(e&&e.preventDefault)e.preventDefault();
 msgbox.textContent=msgs[tries%msgs.length];tries++;
-var w=area.clientWidth-no.offsetWidth,h=90;
-var x=Math.random()*w-no.offsetLeft,y=(Math.random()*h)-no.offsetTop+10;
-no.style.transform='translate('+x+'px,'+y+'px)';
-yes.style.transform='scale('+Math.min(1+tries*0.08,1.5)+')';
+var s=Math.min(1+tries*0.06,1.3);
+yes.style.transform='scale('+s+')';
+var aw=area.clientWidth,ah=area.clientHeight,nw=no.offsetWidth,nh=no.offsetHeight;
+var yw=yes.offsetWidth*s,yh=yes.offsetHeight*s;
+var yl=yes.offsetLeft+yes.offsetWidth/2-yw/2,yt=yes.offsetTop+yes.offsetHeight/2-yh/2;
+var m=14,px=0,py=0,ok=false;
+for(var i=0;i<60&&!ok;i++){
+px=Math.random()*Math.max(aw-nw,0);py=Math.random()*Math.max(ah-nh,0);
+ok=px+nw+m<yl||px>yl+yw+m||py+nh+m<yt||py>yt+yh+m;
+}
+if(!ok){px=Math.max((aw-nw)/2,0);py=Math.min(yt+yh+m,ah-nh);}
+no.style.transform='translate('+(px-no.offsetLeft)+'px,'+(py-no.offsetTop)+'px)';
 }
 no.addEventListener('click',dodge);
 yes.addEventListener('click',function(){
